@@ -29,5 +29,4 @@ int main() {
   ast_destroy(&root);
 
   return ret;
-  //test
 }
