@@ -61,7 +61,22 @@ cmds:
 ;
 
 cmd:
-    KW_FORWARD expr   { /* TODO */ }
+    KW_UP	   		{ /* TODO */ }
+    KW_DOWN			{ /* TODO */ }
+    KW_FORWARD expr   		{ /* TODO */ }
+    KW_BACKWARD expr		{ /* TODO */ }
+    KW_POSITION expr expr	{ /* TODO */ }
+    KW_RIGHT expr		{ /* TODO */ }
+    KW_LEFT expr		{ /* TODO */ }
+    KW_HEADING expr		{ /* TODO */ }
+
+    KW_PRINT expr		{ /* TODO */ }
+    KW_COLOR expr		{ /* TODO */ }
+    KW_HOME			{ /* TODO */ }
+    KW_REPEAT cmd		{ /* TODO */ }
+    KW_SET expr	expr		{ /* TODO */ }
+    KW_PROC expr cmd		{ /* TODO */ }
+    KW_CALL expr		{ /* TODO */ }
 ;
 
 expr:
