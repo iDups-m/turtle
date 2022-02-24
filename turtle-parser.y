@@ -24,6 +24,13 @@ void yyerror(struct ast *ret, const char *);
 %token <value>    VALUE       "value"
 %token <name>     NAME        "name"
 
+/*internal functions
+%token 		  SIN      "sin"
+%token		  COS      "cos"
+%token 		  TAN      "tan"
+%token		  RANDOM   "random"*/
+
+//keywords
 %token 		  KW_PRINT    "print"
 %token		  KW_UP	      "up"
 %token		  KW_DOWN     "down"
@@ -39,8 +46,6 @@ void yyerror(struct ast *ret, const char *);
 %token		  KW_SET      "set"
 %token 		  KW_PROC     "proc"
 %token		  KW_CALL     "call"
-
-/* TODO: add other tokens */
 
 %type <node> unit cmds cmd expr
 
