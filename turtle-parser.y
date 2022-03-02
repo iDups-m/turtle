@@ -72,9 +72,9 @@ cmd:
     KW_PRINT expr		{ $$ = make_cmd_print($2); }
     KW_COLOR expr		{ $$ = make_cmd_color($2); }
     KW_HOME			{ $$ = make_cmd_home(); }
-    KW_REPEAT cmd		{ $$ = make_cmd_repeat($2); }
+    KW_REPEAT expr cmd		{ $$ = make_cmd_repeat($2, $3); }
     KW_SET expr	expr		{ $$ = make_cmd_set($2, $3);}
-    KW_PROC expr cmd		{ $$ = make_cmd_proc($2, $3) }
+    KW_PROC expr cmd		{ $$ = make_cmd_proc($2, $3); }
     KW_CALL expr		{ $$ = make_cmd_call($2); }
     MATH_SIN expr		{ $$ = make_func_sin($2); }
     MATH_COS expr		{ $$ = make_func_cos($2); }
