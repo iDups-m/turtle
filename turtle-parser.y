@@ -1,7 +1,9 @@
 %{
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "turtle-ast.h"
+#include "turtle.h"
 
 int yylex();
 void yyerror(struct ast *ret, const char *);
@@ -64,6 +66,7 @@ void yyerror(struct ast *ret, const char *);
 %precedence NEG
 
 %type <node> unit cmds cmd expr
+%type <value> value
 
 %%
 
@@ -100,15 +103,17 @@ cmd:
 ;
 
 expr:
-    VALUE             { $$ = make_expr_value($1); }
-    | 'q'                 { exit(0); }
-    | NAME                { $$ = constant($1); printf("%s\n", $1); }
-    | expr '+' expr       { $$ = $1 + $3; printf("%.1f + %.1f\n", $1, $3); }
-    | expr '-' expr       { $$ = $1 - $3; printf("%.1f - %.1f\n", $1, $3); }
-    | expr '*' expr       { $$ = $1 * $3; printf("%.1f * %.1f\n", $1, $3); }
-    | expr '/' expr       { $$ = $1 / $3; printf("%.1f / %.1f\n", $1, $3); }
-    | '-' expr %prec NEG  { $$ = -$2; printf("%.1f\n", $2); }
-    | '(' expr ')'        { $$ = $2; printf("%.1f\n", $2); }
+    VALUE             		{ $$ = make_expr_value($1); }
+
+value:
+      'q'                 	{ exit(0); }
+    | NAME                	{ $$ = constant($1); }
+    | value '+' value       	{ $$ = $1 + $3; }
+    | value '-' value       	{ $$ = $1 - $3; }
+    | value '*' value       	{ $$ = $1 * $3; }
+    | value '/' value       	{ $$ = $1 / $3; }
+    | '-' value %prec NEG  	{ $$ = -$2; }
+    | '(' value ')'        	{ $$ = $2; }
 ;
 
 %%
