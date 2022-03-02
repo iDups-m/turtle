@@ -34,9 +34,19 @@ DIGIT [0-9]
 "random"              { return MATH_RANDOM; }
 "sqrt"                { return MATH_SQRT; }
 
+"+"           { return '+'; }
+"-"           { return '-'; }
+"*"           { return '*'; }
+"/"           { return '/'; }
+"("           { return '('; }
+")"           { return ')'; }
+"\n"          { return '\n'; }
+"#"           { return '#'; }
+QUIT          { return 'q'; }
 
 {DIGIT}+              { yylval.value = strtod(yytext, NULL); return VALUE; }
-
+{ID}                  { yylval.name = strdup(yytext); return NAME; }
+#[A-Za-z0-9 -_]*      /* nothing */
 [\n\t ]*              /* whitespace */
 .                     { fprintf(stderr, "Unknown token: '%s'\n", yytext); exit(EXIT_FAILURE); }
 

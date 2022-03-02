@@ -59,6 +59,10 @@ void yyerror(struct ast *ret, const char *);
 %token            CL_GREY       "grey"
 %token            CL_WHITE      "white"
 
+%left '+' '-'
+%left '*' '/'
+%precedence NEG
+
 %type <node> unit cmds cmd expr
 
 %%
@@ -97,7 +101,14 @@ cmd:
 
 expr:
     VALUE             { $$ = make_expr_value($1); }
-    /* TODO: add identifier */
+    | 'q'                 { exit(0); }
+    | NAME                { $$ = constant($1); printf("%s\n", $1); }
+    | expr '+' expr       { $$ = $1 + $3; printf("%.1f + %.1f\n", $1, $3); }
+    | expr '-' expr       { $$ = $1 - $3; printf("%.1f - %.1f\n", $1, $3); }
+    | expr '*' expr       { $$ = $1 * $3; printf("%.1f * %.1f\n", $1, $3); }
+    | expr '/' expr       { $$ = $1 / $3; printf("%.1f / %.1f\n", $1, $3); }
+    | '-' expr %prec NEG  { $$ = -$2; printf("%.1f\n", $2); }
+    | '(' expr ')'        { $$ = $2; printf("%.1f\n", $2); }
 ;
 
 %%
