@@ -73,7 +73,22 @@ struct ast_node *make_cmd_heading(struct ast_node *expr) {
 
 
 
+struct ast_node *make_cmd_call(struct ast_node *expr) {
+    struct ast_node *node = calloc(1, sizeof(struct ast_node));
+    node->kind = KIND_CMD_CALL;
+    node->children_count = 1;
+    node->children[0] = expr;
+    return node;
+}
 
+struct ast_node *make_func_sin(struct ast_node *expr) {
+    struct ast_node *node = calloc(1, sizeof(struct ast_node));
+    node->kind = KIND_EXPR_FUNC;
+    node->u.func = FUNC_SIN;
+    node->children_count = 1;
+    node->children[0] = expr;
+    return node;
+}
 
 
 void ast_destroy(struct ast *self) {
