@@ -15,6 +15,12 @@ struct ast_node *make_expr_value(double value) {
   node->u.value = value;
   return node;
 }
+struct ast_node *make_expr_name(char* name) {
+  struct ast_node *node = calloc(1, sizeof(struct ast_node));
+  node->kind = KIND_EXPR_NAME;
+  node->u.name = name;
+  return node;
+}
 
 struct ast_node *make_cmd_forward(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
@@ -99,23 +105,23 @@ struct ast_node *make_cmd_home() {
     node->u.cmd = CMD_HOME;
     return node;
 }
-struct ast_node *make_cmd_repeat(int value /*, command*/) {
+struct ast_node *make_cmd_repeat(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_REPEAT;
-    node->u.value = value;
+    node->u.value = expr1->u.value;
     return node;
 }
-struct ast_node *make_cmd_set(char* string, double value) {
+struct ast_node *make_cmd_set(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SET;
-    node->u.name = string;
-    node->u.value = value;
+    node->u.name = expr1->u.name;
+    node->u.value = expr1->u.value;
     return node;
 }
-struct ast_node *make_cmd_proc(char* string /*, command */) {
+struct ast_node *make_cmd_proc(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_PROC;
-    node->u.name = string;
+    node->u.name = expr1->u.name;
     //node->children_count = 1;
     //node->children[0] = expr;
     return node;
