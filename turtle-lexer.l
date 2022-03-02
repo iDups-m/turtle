@@ -28,6 +28,11 @@ DIGIT [0-9]
 "set"                 { return KW_SET; }
 "proc"                { return KW_PROC; }
 "call"                { return KW_CALL; }
+"sin"                 { return MATH_SIN; }
+"cos"                 { return MATH_COS; }
+"tan"                 { return MATH_TAN; }
+"random"              { return MATH_RANDOM; }
+"sqrt"                { return MATH_SQRT; }
 
 
 {DIGIT}+              { yylval.value = strtod(yytext, NULL); return VALUE; }
