@@ -61,21 +61,26 @@ cmds:
 ;
 
 cmd:
-    KW_UP	   		{ /* TODO */ }
-    KW_DOWN			{ /* TODO */ }
-    KW_FORWARD expr   		{ /* TODO */ }
-    KW_BACKWARD expr		{ /* TODO */ }
-    KW_POSITION expr expr	{ /* TODO */ }
-    KW_RIGHT expr		{ /* TODO */ }
-    KW_LEFT expr		{ /* TODO */ }
-    KW_HEADING expr		{ /* TODO */ }
-    KW_PRINT expr		{ /* TODO */ }
-    KW_COLOR expr		{ /* TODO */ }
-    KW_HOME			{ /* TODO */ }
-    KW_REPEAT cmd		{ /* TODO */ }
-    KW_SET expr	expr		{ /* TODO */ }
-    KW_PROC expr cmd		{ /* TODO */ }
-    KW_CALL expr		{ /* TODO */ }
+    KW_UP	   		{ $$ = make_cmd_up(); }
+    KW_DOWN			{ $$ = make_cmd_down(); }
+    KW_FORWARD expr   		{ $$ = make_cmd_forward($2); }
+    KW_BACKWARD expr		{ $$ = make_cmd_backward($2); }
+    KW_POSITION expr expr	{ $$ = make_cmd_position($2, $3); }
+    KW_RIGHT expr		{ $$ = make_cmd_right($2); }
+    KW_LEFT expr		{ $$ = make_cmd_left($2); }
+    KW_HEADING expr		{ $$ = make_cmd_heading($2); }
+    KW_PRINT expr		{ $$ = make_cmd_print($2); }
+    KW_COLOR expr		{ $$ = make_cmd_color($2); }
+    KW_HOME			{ $$ = make_cmd_home(); }
+    KW_REPEAT cmd		{ $$ = make_cmd_repeat($2); }
+    KW_SET expr	expr		{ $$ = make_cmd_set($2, $3);}
+    KW_PROC expr cmd		{ $$ = make_cmd_proc($2, $3) }
+    KW_CALL expr		{ $$ = make_cmd_call($2); }
+    MATH_SIN expr		{ $$ = make_func_sin($2); }
+    MATH_COS expr		{ $$ = make_func_cos($2); }
+    MATH_TAN expr		{ $$ = make_func_tan($2); }
+    MATH_RANDOM expr expr	{ $$ = make_func_random($2, $3); }
+    MATH_SQRT expr		{ $$ = make_func_sqrt($2); }
 ;
 
 expr:
