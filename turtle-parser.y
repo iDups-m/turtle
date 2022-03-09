@@ -83,7 +83,9 @@ cmd:
   |  KW_LEFT expr		{ $$ = make_cmd_left($2); }
   |  KW_HEADING expr		{ $$ = make_cmd_heading($2); }
   |  KW_PRINT expr		{ $$ = make_cmd_print($2); }
-  |  KW_COLOR expr		{ $$ = make_cmd_color($2); }
+  |  KW_COLOR expr expr	expr	{ $$ = make_cmd_color($2, $3, $4); }
+  |  KW_COLOR expr ',' expr ','	expr	{ $$ = make_cmd_color($2, $4, $6); }
+  |  KW_COLOR COLOR		{ $$ = make_cmd_color_yy($<color>2.r, $<color>2.g, $<color>2.b); }
   |  KW_HOME			{ $$ = make_cmd_home(); }
   |  KW_REPEAT expr cmd		{ $$ = make_cmd_repeat($2, $3); }
   |  KW_SET expr expr		{ $$ = make_cmd_set($2, $3);}

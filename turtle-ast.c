@@ -108,12 +108,24 @@ struct ast_node *make_cmd_print(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
-struct ast_node *make_cmd_color(struct ast_node *expr) {
+struct ast_node *make_cmd_color(struct ast_node *expr1, struct ast_node *expr2, struct ast_node *expr3) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
     node->u.cmd = CMD_COLOR;
-    node->children_count = 1;
-    node->children[0] = expr;
+    node->children_count = 3;
+    node->children[0] = expr1;
+    node->children[1] = expr2;
+    node->children[2] = expr3;
+    return node;
+}
+struct ast_node *make_cmd_color_yy(double val1, double val2, double val3) {
+    struct ast_node *node = calloc(1, sizeof(struct ast_node));
+    node->kind = KIND_CMD_SIMPLE;
+    node->u.cmd = CMD_COLOR;
+    node->children_count = 3;
+    node->children[0] = make_expr_value(val1);
+    node->children[1] = make_expr_value(val2);
+    node->children[2] = make_expr_value(val3);
     return node;
 }
 struct ast_node *make_cmd_home() {
