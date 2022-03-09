@@ -64,10 +64,19 @@ struct ast_node {
   struct ast_node *next;  // the next node in the sequence
 };
 
+//constructors
 
-// TODO: make some constructors to use in parser.y
-// for example:
+/*
+ * expression and operand
+ */
 struct ast_node *make_expr_value(double value);
+struct ast_node *make_expr_name(char* name);
+struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struct ast_node *expr2);
+struct ast_node *make_unary_operand(char operand, struct ast_node *expr);
+
+/*
+ * commands and math functions
+ */
 struct ast_node *make_cmd_forward(struct ast_node *expr);
 struct ast_node *make_cmd_backward(struct ast_node *expr);
 struct ast_node *make_cmd_position(struct ast_node *expr1, struct ast_node *expr2);

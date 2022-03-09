@@ -104,13 +104,13 @@ cmd:
 expr:
     'q'                 	{ exit(0); }
     | VALUE             	{ $$ = make_expr_value($1); }
-    | NAME                  	{ $$ = constant($1); }
-    | expr '+' expr       	{ $$ = make_binary_operand($1, $2, $3); }
-    | expr '-' expr       	{ $$ = make_binary_operand($1, $2, $3); }
-    | expr '*' expr       	{ $$ = make_binary_operand($1, $2, $3); }
-    | expr '/' expr       	{ $$ = make_binary_operand($1, $2, $3); }
-    | '-' expr %prec NEG   	{ $$ = -$2; }
-    | '(' expr ')'         	{ $$ = $2; }
+    /*| NAME                  	{ $$ = constant($1); }*/
+    | expr '+' expr       	{ $$ = make_binary_operand($1, '+', $3); }
+    | expr '-' expr       	{ $$ = make_binary_operand($1, '-', $3); }
+    | expr '*' expr       	{ $$ = make_binary_operand($1, '*', $3); }
+    | expr '/' expr       	{ $$ = make_binary_operand($1, '/', $3); }
+    | '-' expr %prec NEG   	{ $$ = make_unary_operand('-', $2); }
+    /*| '(' expr ',' expr ')'         	{ $$ = ; }*/
 ;
 
 %%

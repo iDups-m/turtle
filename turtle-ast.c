@@ -21,6 +21,23 @@ struct ast_node *make_expr_name(char* name) {
   node->u.name = name;
   return node;
 }
+struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struct ast_node *expr2) {
+    struct ast_node *node = calloc(1, sizeof(struct ast_node));
+    node->kind = KIND_EXPR_BINOP;
+    node->u.op = operand;
+    node->children_count = 2;
+    node->children[0] = expr1;
+    node->children[1] = expr2;
+    return node;
+}
+struct ast_node *make_unary_operand(char operand, struct ast_node *expr) {
+    struct ast_node *node = calloc(1, sizeof(struct ast_node));
+    node->kind = KIND_EXPR_UNOP;
+    node->u.op = operand;
+    node->children_count = 1;
+    node->children[0] = expr;
+    return node;
+}
 
 struct ast_node *make_cmd_forward(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
