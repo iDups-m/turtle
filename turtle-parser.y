@@ -21,10 +21,16 @@ void yyerror(struct ast *ret, const char *);
   double value;
   char *name;
   struct ast_node *node;
+  struct {
+  	double r;
+  	double g;
+        double b;
+  } color;
 }
 
 %token <value>    VALUE       "value"
 %token <name>     NAME        "name"
+%token <color>    COLOR       "color"
 
 //keywords
 %token 		  KW_PRINT    "print"
@@ -66,6 +72,7 @@ void yyerror(struct ast *ret, const char *);
 %precedence NEG
 
 %type <node> unit cmds cmd expr
+%type <value> value
 
 %%
 

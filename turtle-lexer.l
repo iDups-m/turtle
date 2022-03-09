@@ -39,6 +39,16 @@ INT         0|[1-9][0-9]*
 "random"              { return MATH_RANDOM; }
 "sqrt"                { return MATH_SQRT; }
 
+"red"                 { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+"green"               { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+"blue"                { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+"cyan"                { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+"magenta"             { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+"yellow"              { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+"black"               { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+"gray"                { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+"white"               { yylval.color.r = 1.0; yylval.color.g = 0.0; yylval.color.b = 0.0; return COLOR; }
+
 "+"           { return '+'; }
 "-"           { return '-'; }
 "*"           { return '*'; }
