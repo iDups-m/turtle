@@ -45,7 +45,6 @@ INT         0|[1-9][0-9]*
 "/"           { return '/'; }
 "("           { return '('; }
 ")"           { return ')'; }
-"\n"          { return '\n'; }
 "#"           { return '#'; }
 QUIT          { return 'q'; }
 

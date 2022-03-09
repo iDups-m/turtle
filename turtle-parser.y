@@ -66,7 +66,6 @@ void yyerror(struct ast *ret, const char *);
 %precedence NEG
 
 %type <node> unit cmds cmd expr
-%type <value> value
 
 %%
 
@@ -103,17 +102,15 @@ cmd:
 ;
 
 expr:
-    VALUE             		{ $$ = make_expr_value($1); }
-
-value:
-  'q'                 	  	{ exit(0); }
-  | NAME                  	{ $$ = constant($1); }
-  | value '+' value       	{ $$ = $1 + $3; }
-  | value '-' value       	{ $$ = $1 - $3; }
-  | value '*' value       	{ $$ = $1 * $3; }
-  | value '/' value       	{ $$ = $1 / $3; }
-  | '-' value %prec NEG   	{ $$ = -$2; }
-  | '(' value ')'         	{ $$ = $2; }
+    'q'                 	{ exit(0); }
+    | VALUE             	{ $$ = make_expr_value($1); }
+    | NAME                  	{ $$ = constant($1); }
+    | expr '+' expr       	{ $$ = make_binary_operand($1, $2, $3); }
+    | expr '-' expr       	{ $$ = make_binary_operand($1, $2, $3); }
+    | expr '*' expr       	{ $$ = make_binary_operand($1, $2, $3); }
+    | expr '/' expr       	{ $$ = make_binary_operand($1, $2, $3); }
+    | '-' expr %prec NEG   	{ $$ = -$2; }
+    | '(' expr ')'         	{ $$ = $2; }
 ;
 
 %%
