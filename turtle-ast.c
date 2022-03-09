@@ -181,10 +181,6 @@ struct ast_node *make_func_sqrt(struct ast_node *expr) {
     return node;
 }
 
-
-
-
-
 void ast_destroy(struct ast *self) {
 
 }
