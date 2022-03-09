@@ -30,7 +30,7 @@ void yyerror(struct ast *ret, const char *);
 
 %token <value>    VALUE       "value"
 %token <name>     NAME        "name"
-%token <color>    COLOR       "color"
+%token <color> 	  COLOR
 
 //keywords
 %token 		  KW_PRINT    "print"
@@ -56,23 +56,11 @@ void yyerror(struct ast *ret, const char *);
 %token		  MATH_RANDOM   "random"
 %token		  MATH_SQRT   	"sqrt"
 
-//color
-%token            CL_RED        "red"
-%token            CL_GREEN      "green"
-%token            CL_BLUE       "blue"
-%token            CL_CYAN       "cyan"
-%token            CL_MAGENTA    "magenta"
-%token            CL_YELLOW     "yellow"
-%token            CL_BLACK      "black"
-%token            CL_GREY       "grey"
-%token            CL_WHITE      "white"
-
 %left '+' '-'
 %left '*' '/'
 %precedence NEG
 
 %type <node> unit cmds cmd expr
-%type <value> value
 
 %%
 

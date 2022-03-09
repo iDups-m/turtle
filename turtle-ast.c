@@ -205,7 +205,6 @@ void ast_destroy(struct ast *self) {
 /*
  * context
  */
-
 void context_create(struct context *self) {
 
 }
@@ -213,7 +212,6 @@ void context_create(struct context *self) {
 /*
  * eval
  */
-
 void ast_eval(const struct ast *self, struct context *ctx) {
 
 }
@@ -221,7 +219,6 @@ void ast_eval(const struct ast *self, struct context *ctx) {
 /*
  * print
  */
-
 void ast_print(const struct ast *self) {
-
+    fprintf(stderr, "%zu\n", self->unit->children_count);
 }
