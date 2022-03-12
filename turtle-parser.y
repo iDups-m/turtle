@@ -56,6 +56,7 @@ void yyerror(struct ast *ret, const char *);
 %token		  MATH_RANDOM   "random"
 %token		  MATH_SQRT   	"sqrt"
 
+//%left ','
 %left '+' '-'
 %left '*' '/'
 %precedence NEG
@@ -74,39 +75,38 @@ cmds:
 ;
 
 cmd:
-    KW_UP	   		{ $$ = make_cmd_up(); }
-  |  KW_DOWN			{ $$ = make_cmd_down(); }
-  |  KW_FORWARD expr   		{ $$ = make_cmd_forward($2); }
-  |  KW_BACKWARD expr		{ $$ = make_cmd_backward($2); }
-  |  KW_POSITION expr expr	{ $$ = make_cmd_position($2, $3); }
-  |  KW_RIGHT expr		{ $$ = make_cmd_right($2); }
-  |  KW_LEFT expr		{ $$ = make_cmd_left($2); }
-  |  KW_HEADING expr		{ $$ = make_cmd_heading($2); }
-  |  KW_PRINT expr		{ $$ = make_cmd_print($2); }
-  |  KW_COLOR expr expr	expr	{ $$ = make_cmd_color($2, $3, $4); }
+    KW_UP	   			{ $$ = make_cmd_up(); }
+  |  KW_DOWN				{ $$ = make_cmd_down(); }
+  |  KW_FORWARD expr   			{ $$ = make_cmd_forward($2); }
+  |  KW_BACKWARD expr			{ $$ = make_cmd_backward($2); }
+  |  KW_POSITION expr ',' expr		{ $$ = make_cmd_position($2, $4); }
+  |  KW_RIGHT expr			{ $$ = make_cmd_right($2); }
+  |  KW_LEFT expr			{ $$ = make_cmd_left($2); }
+  |  KW_HEADING expr			{ $$ = make_cmd_heading($2); }
+  |  KW_PRINT expr			{ $$ = make_cmd_print($2); }
   |  KW_COLOR expr ',' expr ','	expr	{ $$ = make_cmd_color($2, $4, $6); }
-  |  KW_COLOR COLOR		{ $$ = make_cmd_color_yy($<color>2.r, $<color>2.g, $<color>2.b); }
-  |  KW_HOME			{ $$ = make_cmd_home(); }
-  |  KW_REPEAT expr cmd		{ $$ = make_cmd_repeat($2, $3); }
-  |  KW_SET expr expr		{ $$ = make_cmd_set($2, $3);}
-  |  KW_PROC expr cmd		{ $$ = make_cmd_proc($2, $3); }
-  |  KW_CALL expr		{ $$ = make_cmd_call($2); }
-  |  MATH_SIN expr		{ $$ = make_func_sin($2); }
-  |  MATH_COS expr		{ $$ = make_func_cos($2); }
-  |  MATH_TAN expr		{ $$ = make_func_tan($2); }
-  |  MATH_RANDOM expr expr	{ $$ = make_func_random($2, $3); }
-  |  MATH_SQRT expr		{ $$ = make_func_sqrt($2); }
+  |  KW_COLOR COLOR			{ $$ = make_cmd_color_yy($<color>2.r, $<color>2.g, $<color>2.b); }
+  |  KW_HOME				{ $$ = make_cmd_home(); }
+  |  KW_REPEAT expr cmd			{ $$ = make_cmd_repeat($2, $3); }
+  |  KW_SET expr ',' expr		{ $$ = make_cmd_set($2, $4);}
+  |  KW_PROC expr cmd			{ $$ = make_cmd_proc($2, $3); }
+  |  KW_CALL expr			{ $$ = make_cmd_call($2); }
+  |  MATH_SIN expr			{ $$ = make_func_sin($2); }
+  |  MATH_COS expr			{ $$ = make_func_cos($2); }
+  |  MATH_TAN expr			{ $$ = make_func_tan($2); }
+  |  MATH_RANDOM expr ',' expr		{ $$ = make_func_random($2, $4); } //TODO gestion des parenthèses : random(0, 1)
+  |  MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
 ;
 
 expr:
-    'q'                 	{ exit(0); }
-    | VALUE             	{ $$ = make_expr_value($1); }
-    /*| NAME                  	{ $$ = constant($1); }*/
-    | expr '+' expr       	{ $$ = make_binary_operand($1, '+', $3); }
-    | expr '-' expr       	{ $$ = make_binary_operand($1, '-', $3); }
-    | expr '*' expr       	{ $$ = make_binary_operand($1, '*', $3); }
-    | expr '/' expr       	{ $$ = make_binary_operand($1, '/', $3); }
-    | '-' expr %prec NEG   	{ $$ = make_unary_operand('-', $2); }
+    'q'                 		{ exit(0); }
+    | VALUE             		{ $$ = make_expr_value($1); }
+    /*| NAME                  		{ $$ = constant($1); }*/
+    | expr '+' expr       		{ $$ = make_binary_operand($1, '+', $3); }
+    | expr '-' expr       		{ $$ = make_binary_operand($1, '-', $3); }
+    | expr '*' expr       		{ $$ = make_binary_operand($1, '*', $3); }
+    | expr '/' expr       		{ $$ = make_binary_operand($1, '/', $3); }
+    | '-' expr %prec NEG   		{ $$ = make_unary_operand('-', $2); }
     /*| '(' expr ',' expr ')'         	{ $$ = ; }*/
 ;
 
