@@ -75,7 +75,8 @@ cmds:
 ;
 
 cmd:
-    KW_UP	   			{ $$ = make_cmd_up(); }
+     '{' cmds '}'			/* montré par Michel */
+  |  KW_UP	   			{ $$ = make_cmd_up(); }
   |  KW_DOWN				{ $$ = make_cmd_down(); }
   |  KW_FORWARD expr   			{ $$ = make_cmd_forward($2); }
   |  KW_BACKWARD expr			{ $$ = make_cmd_backward($2); }
@@ -94,7 +95,7 @@ cmd:
   |  MATH_SIN expr			{ $$ = make_func_sin($2); }
   |  MATH_COS expr			{ $$ = make_func_cos($2); }
   |  MATH_TAN expr			{ $$ = make_func_tan($2); }
-  |  MATH_RANDOM expr ',' expr		{ $$ = make_func_random($2, $4); } //TODO gestion des parenthèses : random(0, 1)
+  |  MATH_RANDOM '(' expr ',' expr ')'	{ $$ = make_func_random($2, $4); }
   |  MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
 ;
 

@@ -211,7 +211,17 @@ struct ast_node *make_func_sqrt(struct ast_node *expr) {
 }
 
 void ast_destroy(struct ast *self) {
+    ast_node_destroy(self->unit);
+}
 
+void ast_node_destroy(struct ast_node *self) {
+    if(self->next){
+        ast_node_destroy(self->next);
+    }
+    for(int i=0; i<self->children_count; ++i){
+        ast_node_destroy(self->children[i]);
+    }
+    free(self);
 }
 
 /*

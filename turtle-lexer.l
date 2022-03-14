@@ -63,14 +63,17 @@ QUIT          { return 'q'; }
 
 true                                                                        { printf("true found\n"); }
 {DIGIT}+                                                                    { yylval.value = strtod(yytext, NULL); return VALUE; }
+0|[1-9]{DIGIT}*                                                             { yylval.value = strtod(yytext, NULL); return VALUE; }
+0x{HEX}+                                                                    { yylval.value = strtod(yytext, NULL); return VALUE; }
+{INT}(\.{DIGIT}+)?([eE][-+]?{DIGIT}+)?|\.{DIGIT}+([eE][-+]?{DIGIT}+)?       { yylval.value = strtod(yytext, NULL); return VALUE; }
 {ID}                                                                        { yylval.name = strdup(yytext); return NAME; }
-0|[1-9]{DIGIT}*                                                             { printf("Number: %s\n", yytext); }
-0x{HEX}+                                                                    { printf("Hex number: %s\n", yytext); }
-{INT}(\.{DIGIT}+)?([eE][-+]?{DIGIT}+)?|\.{DIGIT}+([eE][-+]?{DIGIT}+)?       { printf("Floating number: %s\n", yytext); }
-{BIG-LETTER}[A-Z0-9]*                                                       { printf("Variable or proc: %s\n", yytext); }
-(_{LETTER}|_{DIGIT}|{LETTER})([0-9a-zA-Z_])*                                { printf("C identifier: %s\n", yytext); }
 #[A-Za-z0-9 -_]*                                                            /* nothing */
 [\n\t ]*                                                                    /* whitespace */
 .                                                                           { fprintf(stderr, "Unknown token: '%s'\n", yytext); exit(EXIT_FAILURE); }
 
 %%
+
+/*
+{BIG-LETTER}[A-Z0-9]*                                                       { printf("Variable or proc: %s\n", yytext); }
+(_{LETTER}|_{DIGIT}|{LETTER})([0-9a-zA-Z_])*                                { printf("C identifier: %s\n", yytext); }
+*/
