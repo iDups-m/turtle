@@ -422,21 +422,25 @@ void print_cmd_color(const struct ast_node *self) {
     fprintf(stderr, "\n");
 }
 void print_cmd_home(const struct ast_node *self) {
-    fprintf(stderr, "home");
+    fprintf(stderr, "home ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_repeat(const struct ast_node *self) {
-    fprintf(stderr, "repeat");
+    fprintf(stderr, "repeat ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_set(const struct ast_node *self) {
-    fprintf(stderr, "set");
+    fprintf(stderr, "set ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
@@ -444,55 +448,71 @@ void print_cmd_set(const struct ast_node *self) {
             fprintf(stderr, ", ");
         }
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_proc(const struct ast_node *self) {
-    fprintf(stderr, "proc");
+    fprintf(stderr, "proc ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_call(const struct ast_node *self) {
-    fprintf(stderr, "call");
+    fprintf(stderr, "call ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_func_sin(const struct ast_node *self) {
-    fprintf(stderr, "sin");
+    fprintf(stderr, "sin ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_func_cos(const struct ast_node *self) {
-    fprintf(stderr, "cos");
+    fprintf(stderr, "cos ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_func_tan(const struct ast_node *self) {
-    fprintf(stderr, "tan");
+    fprintf(stderr, "tan ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_func_random(const struct ast_node *self) {
-    fprintf(stderr, "random");
+    fprintf(stderr, "random ");
 
     fprintf(stderr, "(");
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
     fprintf(stderr, ")");
+
+    fprintf(stderr, "\n");
 }
 void print_func_sqrt(const struct ast_node *self) {
-    fprintf(stderr, "sqrt");
+    fprintf(stderr, "sqrt ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
