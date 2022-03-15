@@ -211,10 +211,18 @@ struct ast_node *make_func_sqrt(struct ast_node *expr) {
 }
 
 void ast_destroy(struct ast *self) {
+    if (!self) {
+        return;
+    }
+
     ast_node_destroy(self->unit);
 }
 
 void ast_node_destroy(struct ast_node *self) {
+    if (!self) {
+        return;
+    }
+
     if(self->next){
         ast_node_destroy(self->next);
     }
@@ -256,6 +264,43 @@ void ast_node_print(const struct ast_node *self) {
 
     switch (self->kind) {
         case KIND_CMD_SIMPLE:
+            switch (self->u.cmd){
+                case CMD_UP:
+                    print_cmd_up(self);
+                    break;
+                case CMD_DOWN:
+                    print_cmd_down(self);
+                    break;
+                case CMD_RIGHT:
+                    print_cmd_right(self);
+                    break;
+                case CMD_LEFT:
+                    print_cmd_left(self);
+                    break;
+                case CMD_HEADING:
+                    print_cmd_heading(self);
+                    break;
+                case CMD_FORWARD:
+                    print_cmd_forward(self);
+                    break;
+                case CMD_BACKWARD:
+                    print_cmd_backward(self);
+                    break;
+                case CMD_POSITION:
+                    print_cmd_position(self);
+                    break;
+                case CMD_HOME:
+                    print_cmd_home(self);
+                    break;
+                case CMD_COLOR:
+                    print_cmd_color(self);
+                    break;
+                case CMD_PRINT:
+                    print_cmd_print(self);
+                    break;
+            }
+
+
         case KIND_CMD_REPEAT:
         case KIND_CMD_BLOCK:
         case KIND_CMD_PROC:

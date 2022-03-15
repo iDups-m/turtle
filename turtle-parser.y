@@ -56,7 +56,6 @@ void yyerror(struct ast *ret, const char *);
 %token		  MATH_RANDOM   "random"
 %token		  MATH_SQRT   	"sqrt"
 
-//%left ','
 %left '+' '-'
 %left '*' '/'
 %precedence NEG
@@ -98,6 +97,8 @@ cmd:
   |  MATH_RANDOM '(' expr ',' expr ')'	{ $$ = make_func_random($3, $5); }
   |  MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
 ;
+//TODO : add cmd block
+
 
 expr:
     'q'                 		{ exit(0); }
