@@ -349,7 +349,7 @@ void ast_node_print(const struct ast_node *self) {
 }
 
 void print_cmd_forward(const struct ast_node *self) {
-    fprintf(stderr, "fw");
+    fprintf(stderr, "fw ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
@@ -357,13 +357,17 @@ void print_cmd_forward(const struct ast_node *self) {
             fprintf(stderr, ", ");
         }
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_backward(const struct ast_node *self) {
-    fprintf(stderr, "bw");
+    fprintf(stderr, "bw ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_position(const struct ast_node *self) {
     fprintf(stderr, "pos ");
@@ -374,6 +378,8 @@ void print_cmd_position(const struct ast_node *self) {
             fprintf(stderr, ", ");
         }
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_right(const struct ast_node *self) {
     fprintf(stderr, "rt ");
@@ -381,6 +387,8 @@ void print_cmd_right(const struct ast_node *self) {
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_left(const struct ast_node *self) {
     fprintf(stderr, "lt ");
@@ -388,26 +396,34 @@ void print_cmd_left(const struct ast_node *self) {
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_heading(const struct ast_node *self) {
-    fprintf(stderr, "hd");
+    fprintf(stderr, "hd" );
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_up(const struct ast_node *self) {
-    fprintf(stderr, "up");
+    fprintf(stderr, "up ");
+    fprintf(stderr, "\n");
 }
 void print_cmd_down(const struct ast_node *self) {
-    fprintf(stderr, "down");
+    fprintf(stderr, "down ");
+    fprintf(stderr, "\n");
 }
 void print_cmd_print(const struct ast_node *self) {
-    fprintf(stderr, "print");
+    fprintf(stderr, "print ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
     }
+
+    fprintf(stderr, "\n");
 }
 void print_cmd_color(const struct ast_node *self) {
     fprintf(stderr, "color ");
