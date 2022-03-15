@@ -300,16 +300,15 @@ void ast_node_print(const struct ast_node *self) {
             break;
     }
 
-    for(int i=0; i<self->children_count; ++i){
-        ast_node_print(self->children[i]);
-    }
     fprintf(stderr, "\n");
 
     ast_node_print(self->next);
 }
 
 void print_cmd_forward(const struct ast_node *self) {
-
+    for(int i = 0; i < self->children_count; ++i) {
+        ast_node_print(self->children[i]);
+    }
 }
 void print_cmd_backward(const struct ast_node *self) {
 
