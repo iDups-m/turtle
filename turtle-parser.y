@@ -95,7 +95,7 @@ cmd:
   |  MATH_SIN expr			{ $$ = make_func_sin($2); }
   |  MATH_COS expr			{ $$ = make_func_cos($2); }
   |  MATH_TAN expr			{ $$ = make_func_tan($2); }
-  |  MATH_RANDOM '(' expr ',' expr ')'	{ $$ = make_func_random($2, $4); }
+  |  MATH_RANDOM '(' expr ',' expr ')'	{ $$ = make_func_random($3, $5); }
   |  MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
 ;
 

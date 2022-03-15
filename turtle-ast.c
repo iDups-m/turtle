@@ -246,28 +246,96 @@ void ast_print(const struct ast *self) {
         return;
     }
 
-    do {
-        switch (self->unit->kind) {
-            case KIND_CMD_SIMPLE:
-            case KIND_CMD_REPEAT:
-            case KIND_CMD_BLOCK:
-            case KIND_CMD_PROC:
-            case KIND_CMD_CALL:
-            case KIND_CMD_SET:
-                fprintf(stderr, "%u\n", self->unit->u.cmd);
-                break;
-            case KIND_EXPR_FUNC: fprintf(stderr, "%u", self->unit->u.func);
-                break;
-            case KIND_EXPR_VALUE: fprintf(stderr, "%f\n", self->unit->u.value);
-                break;
-            case KIND_EXPR_UNOP:
-            case KIND_EXPR_BINOP:
-                fprintf(stderr, "%c\n", self->unit->u.op);
-                break;
-            case KIND_EXPR_BLOCK: fprintf(stderr, "block");
-                break;
-            case KIND_EXPR_NAME: fprintf(stderr, "%s\n", self->unit->u.name);
-                break;
-        }
-    } while (self->unit->next != NULL);
+    ast_node_print(self->unit);
+}
+
+void ast_node_print(const struct ast_node *self) {
+    if (!self) {
+        return;
+    }
+
+    switch (self->kind) {
+        case KIND_CMD_SIMPLE:
+        case KIND_CMD_REPEAT:
+        case KIND_CMD_BLOCK:
+        case KIND_CMD_PROC:
+        case KIND_CMD_CALL:
+        case KIND_CMD_SET:
+        case KIND_EXPR_FUNC:
+        case KIND_EXPR_VALUE:
+        case KIND_EXPR_UNOP:
+        case KIND_EXPR_BINOP:
+        case KIND_EXPR_BLOCK:
+        case KIND_EXPR_NAME:
+    }
+
+    for(int i=0; i<self->children_count; ++i){
+        ast_node_print(self->children[i]);
+    }
+
+    ast_node_print(self->next);
+}
+
+void print_cmd_forward(const struct ast_node *self) {
+
+}
+void print_cmd_backward(const struct ast_node *self) {
+
+}
+void print_cmd_position(const struct ast_node *self) {
+
+}
+void print_cmd_right(const struct ast_node *self) {
+
+}
+void print_cmd_left(const struct ast_node *self) {
+
+}
+void print_cmd_heading(const struct ast_node *self) {
+
+}
+void print_cmd_up(const struct ast_node *self) {
+
+}
+void print_cmd_down(const struct ast_node *self) {
+
+}
+void print_cmd_print(const struct ast_node *self) {
+
+}
+void print_cmd_color(const struct ast_node *self) {
+
+}
+void print_cmd_color_yy(const struct ast_node *self) {
+
+}
+void print_cmd_home(const struct ast_node *self) {
+
+}
+void print_cmd_repeat(const struct ast_node *self) {
+
+}
+void print_cmd_set(const struct ast_node *self) {
+
+}
+void print_cmd_proc(const struct ast_node *self) {
+
+}
+void print_cmd_call(const struct ast_node *self) {
+
+}
+void print_func_sin(const struct ast_node *self) {
+
+}
+void print_func_cos(const struct ast_node *self) {
+
+}
+void print_func_tan(const struct ast_node *self) {
+
+}
+void print_func_random(const struct ast_node *self) {
+
+}
+void print_func_sqrt(const struct ast_node *self) {
+
 }
