@@ -257,21 +257,53 @@ void ast_node_print(const struct ast_node *self) {
     switch (self->kind) {
         case KIND_CMD_SIMPLE:
         case KIND_CMD_REPEAT:
+            print_cmd_repeat(self);
+            break;
         case KIND_CMD_BLOCK:
         case KIND_CMD_PROC:
+            print_cmd_proc(self);
+            break;
         case KIND_CMD_CALL:
+            print_cmd_call(self);
+            break;
         case KIND_CMD_SET:
+            print_cmd_set(self);
+            break;
         case KIND_EXPR_FUNC:
+            switch (self->u.func) {
+                case FUNC_COS:
+                    print_func_cos(self);
+                    break;
+                case FUNC_RANDOM:
+                    print_func_random(self);
+                    break;
+                case FUNC_SIN:
+                    print_func_sin(self);
+                    break;
+                case FUNC_SQRT:
+                    print_func_sqrt(self);
+                    break;
+                case FUNC_TAN:
+                    print_func_tan(self);
+                    break;
+            }
         case KIND_EXPR_VALUE:
+            fprintf(stderr, "%f", self->u.value);
+            break;
         case KIND_EXPR_UNOP:
         case KIND_EXPR_BINOP:
+            fprintf(stderr, "%c", self->u.op);
+            break;
         case KIND_EXPR_BLOCK:
         case KIND_EXPR_NAME:
+            fprintf(stderr, "%s", self->u.name);
+            break;
     }
 
     for(int i=0; i<self->children_count; ++i){
         ast_node_print(self->children[i]);
     }
+    fprintf(stderr, "\n");
 
     ast_node_print(self->next);
 }
