@@ -571,7 +571,15 @@ void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
     }
 }
 void eval_cmd_left(const struct ast_node *self, struct context *ctx) {
+    ctx->angle -= self->children[0]->u.value;
 
+    if (ctx->angle > 360) {
+        ctx->angle -= 360;
+    }
+
+    if (ctx->angle < 360) {
+        ctx->angle += 360;
+    }
 }
 void eval_cmd_heading(const struct ast_node *self, struct context *ctx) {
 
