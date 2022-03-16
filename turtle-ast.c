@@ -828,7 +828,6 @@ void print_cmd_home(const struct ast_node *self) {
 }
 void print_cmd_repeat(const struct ast_node *self) {
     fprintf(stderr, "repeat ");
-
     ast_node_print(self->children[0]);
 
     fprintf(stderr, " {\n");
