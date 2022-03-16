@@ -829,9 +829,13 @@ void print_cmd_home(const struct ast_node *self) {
 void print_cmd_repeat(const struct ast_node *self) {
     fprintf(stderr, "repeat ");
 
-    for (int i = 0; i < self->children_count; ++i) {
-        ast_node_print(self->children[i]);
-    }
+    ast_node_print(self->children[0]);
+
+    fprintf(stderr, " {\n");
+
+    ast_node_print(self->children[1]);
+
+    fprintf(stderr, "\n}");
 
     fprintf(stderr, "\n");
 }
@@ -850,9 +854,13 @@ void print_cmd_set(const struct ast_node *self) {
 void print_cmd_proc(const struct ast_node *self) {
     fprintf(stderr, "proc ");
 
-    for (int i = 0; i < self->children_count; ++i) {
-        ast_node_print(self->children[i]);
-    }
+    ast_node_print(self->children[0]);
+
+    fprintf(stderr, " {\n");
+
+    ast_node_print(self->children[1]);
+
+    fprintf(stderr, "\n}");
 
     fprintf(stderr, "\n");
 }
