@@ -95,6 +95,7 @@ struct ast_node *make_cmd_repeat(struct ast_node *expr1, struct ast_node *expr2)
 struct ast_node *make_cmd_set(struct ast_node *expr1, struct ast_node *expr2);
 struct ast_node *make_cmd_proc(struct ast_node *expr1, struct ast_node *expr2);
 struct ast_node *make_cmd_call(struct ast_node *expr);
+struct ast_node *make_cmd_block(struct ast_node *expr);
 struct ast_node *make_func_sin(struct ast_node *expr);
 struct ast_node *make_func_cos(struct ast_node *expr);
 struct ast_node *make_func_tan(struct ast_node *expr);
@@ -146,7 +147,6 @@ void print_cmd_up(const struct ast_node *self);
 void print_cmd_down(const struct ast_node *self);
 void print_cmd_print(const struct ast_node *self);
 void print_cmd_color(const struct ast_node *self);
-void print_cmd_color_yy(const struct ast_node *self);
 void print_cmd_home(const struct ast_node *self);
 void print_cmd_repeat(const struct ast_node *self);
 void print_cmd_set(const struct ast_node *self);

@@ -305,6 +305,19 @@ struct ast_node *make_cmd_call(struct ast_node *expr) {
     return node;
 }
 /**
+ * constructor for the block command
+ * @param expr the block or commands
+ * @return the node created
+ */
+struct ast_node *make_cmd_block(struct ast_node *expr){
+    struct ast_node *node = calloc(1, sizeof(struct ast_node));
+    node->kind = KIND_CMD_BLOCK;
+    node->children_count = 1;
+    node->children[0] = expr;
+    return node;
+}
+
+/**
  * constructor for the sin function
  * @param expr the value to calculate
  * @return the node result created

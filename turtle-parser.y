@@ -86,7 +86,7 @@ cmds:
  * Grammar rules for each commands.
  */
 cmd:
-     '{' cmds '}'
+     '{' cmds '}'			{ $$ = make_cmd_block($2); }
   |  KW_UP	   			{ $$ = make_cmd_up(); }
   |  KW_DOWN				{ $$ = make_cmd_down(); }
   |  KW_FORWARD expr   			{ $$ = make_cmd_forward($2); }
@@ -109,7 +109,6 @@ cmd:
   |  MATH_RANDOM '(' expr ',' expr ')'	{ $$ = make_func_random($3, $5); }
   |  MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
 ;
-//TODO : add cmd block and { cmds }
 
 
 /**
@@ -118,7 +117,7 @@ cmd:
 expr:
     'q'                 		{ exit(0); }
     | VALUE             		{ $$ = make_expr_value($1); }
-    /*| NAME                  		{ $$ = constant($1); }*/
+    | NAME                  		{ $$ = make_expr_name($1); }
     | expr '+' expr       		{ $$ = make_binary_operand($1, '+', $3); }
     | expr '-' expr       		{ $$ = make_binary_operand($1, '-', $3); }
     | expr '*' expr       		{ $$ = make_binary_operand($1, '*', $3); }
