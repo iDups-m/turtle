@@ -601,7 +601,7 @@ void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
 
 }
-void eval_cmd_block(const struct) {
+void eval_cmd_block(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_func_sin(const struct ast_node *self, struct context *ctx) {
