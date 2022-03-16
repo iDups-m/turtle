@@ -152,6 +152,7 @@ void print_cmd_repeat(const struct ast_node *self);
 void print_cmd_set(const struct ast_node *self);
 void print_cmd_proc(const struct ast_node *self);
 void print_cmd_call(const struct ast_node *self);
+void print_cmd_block(const struct ast_node *self);
 void print_func_sin(const struct ast_node *self);
 void print_func_cos(const struct ast_node *self);
 void print_func_tan(const struct ast_node *self);

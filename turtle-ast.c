@@ -674,6 +674,8 @@ void ast_node_print(const struct ast_node *self) {
             print_cmd_repeat(self);
             break;
         case KIND_CMD_BLOCK:
+            print_cmd_block(self);
+            break;
         case KIND_CMD_PROC:
             print_cmd_proc(self);
             break;
@@ -780,7 +782,7 @@ void print_cmd_left(const struct ast_node *self) {
     fprintf(stderr, "\n");
 }
 void print_cmd_heading(const struct ast_node *self) {
-    fprintf(stderr, "hd" );
+    fprintf(stderr, "hd ");
 
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
@@ -789,11 +791,11 @@ void print_cmd_heading(const struct ast_node *self) {
     fprintf(stderr, "\n");
 }
 void print_cmd_up(const struct ast_node *self) {
-    fprintf(stderr, "up ");
+    fprintf(stderr, "up");
     fprintf(stderr, "\n");
 }
 void print_cmd_down(const struct ast_node *self) {
-    fprintf(stderr, "down ");
+    fprintf(stderr, "down");
     fprintf(stderr, "\n");
 }
 void print_cmd_print(const struct ast_node *self) {
@@ -828,6 +830,7 @@ void print_cmd_home(const struct ast_node *self) {
 }
 void print_cmd_repeat(const struct ast_node *self) {
     fprintf(stderr, "repeat ");
+
     ast_node_print(self->children[0]);
 
     fprintf(stderr, " {\n");
@@ -871,6 +874,11 @@ void print_cmd_call(const struct ast_node *self) {
     }
 
     fprintf(stderr, "\n");
+}
+void print_cmd_block(const struct ast_node *self) {
+    for (int i = 0; i < self->children_count; ++i) {
+        ast_node_print(self->children[i]);
+    }
 }
 void print_func_sin(const struct ast_node *self) {
     fprintf(stderr, "sin ");
