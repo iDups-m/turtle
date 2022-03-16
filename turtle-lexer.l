@@ -72,7 +72,26 @@ true                                                                        { pr
 
 %%
 
+
 /*
-{BIG-LETTER}[A-Z0-9]*                                                       { printf("Variable or proc: %s\n", yytext); }
-(_{LETTER}|_{DIGIT}|{LETTER})([0-9a-zA-Z_])*                                { printf("C identifier: %s\n", yytext); }
-*/
+ * Step 1 :
+ * Recognise commands and return keywords
+ */
+
+/**
+ * Step 2 :
+ * Keywords of some color
+ * Indicates rgb (red/blue/green) values of keywords
+ * Store it in the structure color of yylval
+ */
+
+/**
+ * Step 3 :
+ * Recognise grammar symbols
+ */
+
+ /**
+  * Step 4 :
+  * Regex to catch names, numbers, float...
+  * In some case return the value and the name
+  */

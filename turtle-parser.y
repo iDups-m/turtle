@@ -17,6 +17,11 @@ void yyerror(struct ast *ret, const char *);
 
 %parse-param { struct ast *ret }
 
+/**
+ * All types possible.
+ * The structure color store red green blue values for each color.
+ * A color can be given with doubles and so we put it in the structure, or with a keyword and me know what are values for rgb.
+ */
 %union {
   double value;
   char *name;
@@ -56,6 +61,10 @@ void yyerror(struct ast *ret, const char *);
 %token		  MATH_RANDOM   "random"
 %token		  MATH_SQRT   	"sqrt"
 
+/**
+ * Priority rules :
+ * Indicates associativity and priority for arithmetic operations
+ */
 %left '+' '-'
 %left '*' '/'
 %precedence NEG
@@ -73,8 +82,12 @@ cmds:
   | /* empty */       { $$ = NULL; }
 ;
 
+/**
+ * Grammar rules for each commands.
+ *
+ */
 cmd:
-     '{' cmds '}'			/* montré par Michel */
+     '{' cmds '}'
   |  KW_UP	   			{ $$ = make_cmd_up(); }
   |  KW_DOWN				{ $$ = make_cmd_down(); }
   |  KW_FORWARD expr   			{ $$ = make_cmd_forward($2); }
@@ -84,8 +97,8 @@ cmd:
   |  KW_LEFT expr			{ $$ = make_cmd_left($2); }
   |  KW_HEADING expr			{ $$ = make_cmd_heading($2); }
   |  KW_PRINT expr			{ $$ = make_cmd_print($2); }
-  |  KW_COLOR expr ',' expr ','	expr	{ $$ = make_cmd_color($2, $4, $6); }
-  |  KW_COLOR COLOR			{ $$ = make_cmd_color_yy($<color>2.r, $<color>2.g, $<color>2.b); }
+  |  KW_COLOR expr ',' expr ','	expr	{ $$ = make_cmd_color($2, $4, $6); }						/* color with values of rgb 	*/
+  |  KW_COLOR COLOR			{ $$ = make_cmd_color_yy($<color>2.r, $<color>2.g, $<color>2.b); }		/* color with keyword 		*/
   |  KW_HOME				{ $$ = make_cmd_home(); }
   |  KW_REPEAT expr cmd			{ $$ = make_cmd_repeat($2, $3); }
   |  KW_SET expr ',' expr		{ $$ = make_cmd_set($2, $4);}
@@ -97,7 +110,7 @@ cmd:
   |  MATH_RANDOM '(' expr ',' expr ')'	{ $$ = make_func_random($3, $5); }
   |  MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
 ;
-//TODO : add cmd block
+//TODO : add cmd block and { cmds }
 
 
 expr:
