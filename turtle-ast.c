@@ -551,10 +551,6 @@ void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
 
     fprintf(stdout, "LineTo %1.f %1.f", ctx->x, ctx->y);
 
-    /*for (int i = 0; i < self->children_count; ++i) {
-        ast_node_eval(self->children[i], ctx);
-    }*/
-
     fprintf(stdout, "\n");
 }
 void eval_cmd_backward(const struct ast_node *self, struct context *ctx) {
@@ -564,7 +560,15 @@ void eval_cmd_position(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
+    ctx->angle += self->children[0]->u.value;
 
+    if (ctx->angle > 360) {
+        ctx->angle -= 360;
+    }
+
+    if (ctx->angle < 360) {
+        ctx->angle += 360;
+    }
 }
 void eval_cmd_left(const struct ast_node *self, struct context *ctx) {
 
@@ -581,10 +585,6 @@ void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
     ctx->color.b = self->children[2]->u.value;
 
     fprintf(stdout, "Color %1.f %1.f %1.f", ctx->color.r, ctx->color.g, ctx->color.b);
-
-    /*for (int i = 0; i < self->children_count; ++i) {
-        ast_node_eval(self->children[i], ctx);
-    }*/
 
     fprintf(stdout, "\n");
 }
