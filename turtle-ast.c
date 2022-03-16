@@ -527,7 +527,7 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             }
             break;
         case KIND_EXPR_VALUE:
-            //TODO
+            fprintf(stdout, "%f ", self->u.value);
             break;
         case KIND_EXPR_UNOP:
             eval_unary_operand(self, ctx);
@@ -537,7 +537,7 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             break;
         case KIND_EXPR_BLOCK:
         case KIND_EXPR_NAME:
-            //TODO
+            fprintf(stdout, "%s ", self->u.name);
             break;
     }
 
@@ -599,6 +599,9 @@ void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
+
+}
+void eval_cmd_block(const struct) {
 
 }
 void eval_func_sin(const struct ast_node *self, struct context *ctx) {
