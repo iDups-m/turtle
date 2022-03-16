@@ -9,11 +9,41 @@
 
 #define PI 3.141592653589793
 
+/**
+ * intern function to duplicate a string
+ * @param src the string to duplicate
+ * @return the copy of the string
+ */
+char *str_dup(char *src) {
+    char *str;
+    char *p;
+    int len = 0;
+
+    while (src[len]) {
+        len++;
+    }
+
+    str = malloc(len + 1);
+    p = str;
+
+    while (*src) {
+        *p++ = *src++;
+    }
+
+    *p = '\0';
+    return str;
+}
+
+/**
+ * constructor for a value
+ * @param value the value to give to the node
+ * @return the node created
+ */
 struct ast_node *make_expr_value(double value) {
-  struct ast_node *node = calloc(1, sizeof(struct ast_node));
-  node->kind = KIND_EXPR_VALUE;
-  node->u.value = value;
-  return node;
+   struct ast_node *node = calloc(1, sizeof(struct ast_node));
+   node->kind = KIND_EXPR_VALUE;
+   node->u.value = value;
+   return node;
 }
 struct ast_node *make_expr_name(char* name) {
   struct ast_node *node = calloc(1, sizeof(struct ast_node));
@@ -518,6 +548,9 @@ void print_func_random(const struct ast_node *self) {
     fprintf(stderr, "(");
     for (int i = 0; i < self->children_count; ++i) {
         ast_node_print(self->children[i]);
+        if (i < self->children_count-1) {
+            fprintf(stderr, ", ");
+        }
     }
     fprintf(stderr, ")");
 

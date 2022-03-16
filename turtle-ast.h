@@ -64,6 +64,8 @@ struct ast_node {
   struct ast_node *next;  // the next node in the sequence
 };
 
+char *str_dup(char *src);
+
 //constructors
 
 /*
