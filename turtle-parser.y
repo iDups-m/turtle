@@ -84,7 +84,6 @@ cmds:
 
 /**
  * Grammar rules for each commands.
- *
  */
 cmd:
      '{' cmds '}'
@@ -113,6 +112,9 @@ cmd:
 //TODO : add cmd block and { cmds }
 
 
+/**
+ * An expression can be a value (double), a name (string) or operation between expressions
+ */
 expr:
     'q'                 		{ exit(0); }
     | VALUE             		{ $$ = make_expr_value($1); }

@@ -113,13 +113,19 @@ void ast_node_destroy(struct ast_node *self);
 
 // the execution context
 struct context {
-  double x;
-  double y;
-  double angle;
-  bool up;
+    double x;
+    double y;
+    double angle;
+    bool up;
 
-  // TODO: add procedure handling
-  // TODO: add variable handling
+    struct {
+        double r;
+        double g;
+        double b;
+    } color;
+
+    // TODO: add procedure handling
+    // TODO: add variable handling
 };
 
 // create an initial context

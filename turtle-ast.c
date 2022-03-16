@@ -405,11 +405,18 @@ void ast_node_destroy(struct ast_node *self) {
 }
 
 /**
- * create a context
- * @param self the context to create as a node
+ * create the initial context
+ * set initials values for attributes of the context
+ * @param self the context of the execution
  */
 void context_create(struct context *self) {
-
+    self->x = 0.0;
+    self->y = 0.0;
+    self->angle = 0.0;
+    self->up = false;
+    self->color.r = 0.0;
+    self->color.g = 0.0;
+    self->color.b = 0.0;
 }
 
 /**
