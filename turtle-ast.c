@@ -549,7 +549,11 @@ void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
 
     ctx->y -= self->children[0]->u.value;
 
-    fprintf(stdout, "LineTo %1.f %1.f", ctx->x, ctx->y);
+    if (ctx->up) {
+        fprintf(stdout, "MoveTo %1.f %1.f", ctx->x, ctx->y);
+    } else {
+        fprintf(stdout, "LineTo %1.f %1.f", ctx->x, ctx->y);
+    }
 
     fprintf(stdout, "\n");
 }
