@@ -527,7 +527,7 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             }
             break;
         case KIND_EXPR_VALUE:
-            fprintf(stdout, "%f ", self->u.value);
+            //fprintf(stdout, "%.1f ", self->u.value);
             break;
         case KIND_EXPR_UNOP:
             eval_unary_operand(self, ctx);
@@ -536,6 +536,7 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             eval_binary_operand(self, ctx);
             break;
         case KIND_EXPR_BLOCK:
+            //TODO
         case KIND_EXPR_NAME:
             fprintf(stdout, "%s ", self->u.name);
             break;
@@ -545,13 +546,14 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
 }
 
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
-    fprintf(stdout, "LineTo ");
 
     ctx->y -= self->children[0]->u.value;
 
-    for (int i = 0; i < self->children_count; ++i) {
+    fprintf(stdout, "LineTo %1.f %1.f", ctx->x, ctx->y);
+
+    /*for (int i = 0; i < self->children_count; ++i) {
         ast_node_eval(self->children[i], ctx);
-    }
+    }*/
 
     fprintf(stdout, "\n");
 }
@@ -574,15 +576,15 @@ void eval_cmd_print(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
-    fprintf(stdout, "Color ");
-
     ctx->color.r = self->children[0]->u.value;
     ctx->color.g = self->children[1]->u.value;
     ctx->color.b = self->children[2]->u.value;
 
-    for (int i = 0; i < self->children_count; ++i) {
+    fprintf(stdout, "Color %1.f %1.f %1.f", ctx->color.r, ctx->color.g, ctx->color.b);
+
+    /*for (int i = 0; i < self->children_count; ++i) {
         ast_node_eval(self->children[i], ctx);
-    }
+    }*/
 
     fprintf(stdout, "\n");
 }
