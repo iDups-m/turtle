@@ -263,6 +263,9 @@ struct ast_node *make_cmd_repeat(struct ast_node *expr1, struct ast_node *expr2)
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_REPEAT;
     node->u.value = expr1->u.value;
+    node->children_count = 2;
+    node->children[0] = expr1;
+    node->children[1] = expr2;
     return node;
 }
 /**
