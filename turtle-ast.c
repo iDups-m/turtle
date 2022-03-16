@@ -455,10 +455,10 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
         case KIND_CMD_SIMPLE:
             switch (self->u.cmd){
                 case CMD_UP:
-                    eval_cmd_up(self, ctx);
+                    ctx->up = true;
                     break;
                 case CMD_DOWN:
-                    eval_cmd_down(self, ctx);
+                    ctx->up = false;
                     break;
                 case CMD_RIGHT:
                     eval_cmd_right(self, ctx);
@@ -493,7 +493,8 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             eval_cmd_repeat(self, ctx);
             break;
         case KIND_CMD_BLOCK:
-            //TODO
+            eval_cmd_block(self, ctx);
+            break;
         case KIND_CMD_PROC:
             eval_cmd_proc(self, ctx);
             break;
@@ -524,6 +525,7 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             break;
         case KIND_EXPR_VALUE:
             //TODO
+            break;
         case KIND_EXPR_UNOP:
             eval_unary_operand(self, ctx);
             break;
@@ -540,7 +542,15 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
 }
 
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
+    fprintf(stdout, "LineTo ");
 
+    ctx->y -= self->children[0]->u.value;
+
+    for (int i = 0; i < self->children_count; ++i) {
+        ast_node_eval(self->children[i], ctx);
+    }
+
+    fprintf(stdout, "\n");
 }
 void eval_cmd_backward(const struct ast_node *self, struct context *ctx) {
 
@@ -557,20 +567,21 @@ void eval_cmd_left(const struct ast_node *self, struct context *ctx) {
 void eval_cmd_heading(const struct ast_node *self, struct context *ctx) {
 
 }
-void eval_cmd_up(const struct ast_node *self, struct context *ctx) {
-
-}
-void eval_cmd_down(const struct ast_node *self, struct context *ctx) {
-
-}
 void eval_cmd_print(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
+    fprintf(stdout, "Color ");
 
-}
-void eval_cmd_color_yy(const struct ast_node *self, struct context *ctx) {
+    ctx->color.r = self->children[0]->u.value;
+    ctx->color.g = self->children[1]->u.value;
+    ctx->color.b = self->children[2]->u.value;
 
+    for (int i = 0; i < self->children_count; ++i) {
+        ast_node_eval(self->children[i], ctx);
+    }
+
+    fprintf(stdout, "\n");
 }
 void eval_cmd_home(const struct ast_node *self, struct context *ctx) {
 
@@ -837,7 +848,7 @@ void print_cmd_repeat(const struct ast_node *self) {
 
     ast_node_print(self->children[1]);
 
-    fprintf(stderr, "\n}");
+    fprintf(stderr, "}");
 
     fprintf(stderr, "\n");
 }
@@ -862,7 +873,7 @@ void print_cmd_proc(const struct ast_node *self) {
 
     ast_node_print(self->children[1]);
 
-    fprintf(stderr, "\n}");
+    fprintf(stderr, "}");
 
     fprintf(stderr, "\n");
 }
