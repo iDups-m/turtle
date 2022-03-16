@@ -34,6 +34,16 @@ char *str_dup(char *src) {
     return str;
 }
 
+
+/**
+ * we have multiple constructor for all the
+ * different commands, functions, values and names
+ * So, we allocate a node with calloc of type struct ast_node
+ * and we define the kind and the 'value' of the node
+ * such as a value, a name an operand, a function or a command
+ */
+
+
 /**
  * constructor for a value
  * @param value the value to give to the node
@@ -45,12 +55,24 @@ struct ast_node *make_expr_value(double value) {
    node->u.value = value;
    return node;
 }
+/**
+ * constructor for a name
+ * @param name the name to give to the node
+ * @return the node created
+ */
 struct ast_node *make_expr_name(char* name) {
   struct ast_node *node = calloc(1, sizeof(struct ast_node));
   node->kind = KIND_EXPR_NAME;
   node->u.name = name;
   return node;
 }
+/**
+ * constructor for a binary operand
+ * @param expr1 the left part of the operation
+ * @param operand the operand
+ * @param expr2 the right part of the operation
+ * @return the node created
+ */
 struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_BINOP;
@@ -60,6 +82,12 @@ struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struc
     node->children[1] = expr2;
     return node;
 }
+/**
+ * constructor for a unary operand
+ * @param operand the operand
+ * @param expr the right part of the operation
+ * @return the node created
+ */
 struct ast_node *make_unary_operand(char operand, struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_UNOP;
@@ -68,7 +96,11 @@ struct ast_node *make_unary_operand(char operand, struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
-
+/**
+ * constructor for the command forward
+ * @param expr the expr node
+ * @return the node created
+ */
 struct ast_node *make_cmd_forward(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -77,6 +109,11 @@ struct ast_node *make_cmd_forward(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
+/**
+ * constructor for the command backward
+ * @param expr the expr node
+ * @return the node created
+ */
 struct ast_node *make_cmd_backward(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -85,6 +122,12 @@ struct ast_node *make_cmd_backward(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
+/**
+ * constructor for the command position
+ * @param expr1 the x-axis value
+ * @param expr2 the y-axis value
+ * @return the node created
+ */
 struct ast_node *make_cmd_position(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -94,6 +137,11 @@ struct ast_node *make_cmd_position(struct ast_node *expr1, struct ast_node *expr
     node->children[1] = expr2;
     return node;
 }
+/**
+ * constructor for the command right
+ * @param expr the expr node
+ * @return the node created
+ */
 struct ast_node *make_cmd_right(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -102,6 +150,11 @@ struct ast_node *make_cmd_right(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
+/**
+ * constructor for the left command
+ * @param expr the expr value
+ * @return the node created
+ */
 struct ast_node *make_cmd_left(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -110,6 +163,11 @@ struct ast_node *make_cmd_left(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
+/**
+ * constructor for the heading command
+ * @param expr the expr value
+ * @return the node created
+ */
 struct ast_node *make_cmd_heading(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -118,18 +176,31 @@ struct ast_node *make_cmd_heading(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
+/**
+ * constructor for the up command
+ * @return the node created
+ */
 struct ast_node *make_cmd_up() {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
     node->u.cmd = CMD_UP;
     return node;
 }
+/**
+ * constructor for the down command
+ * @return the node created
+ */
 struct ast_node *make_cmd_down() {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
     node->u.cmd = CMD_DOWN;
     return node;
 }
+/**
+ * constructor for the print command
+ * @param expr the expr to display
+ * @return the node created
+ */
 struct ast_node *make_cmd_print(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -138,6 +209,13 @@ struct ast_node *make_cmd_print(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
+/**
+ * constructor for the color with values command
+ * @param expr1 the red value of the color
+ * @param expr2 the green value of the color
+ * @param expr3 the blue value of the color
+ * @return the node created
+ */
 struct ast_node *make_cmd_color(struct ast_node *expr1, struct ast_node *expr2, struct ast_node *expr3) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -148,6 +226,13 @@ struct ast_node *make_cmd_color(struct ast_node *expr1, struct ast_node *expr2, 
     node->children[2] = expr3;
     return node;
 }
+/**
+ * constructor for the color with name command
+ * @param val1 the red value fo the color
+ * @param val2 the green value of the color
+ * @param val3 the blue value of the color
+ * @return the node created
+ */
 struct ast_node *make_cmd_color_yy(double val1, double val2, double val3) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
@@ -158,18 +243,34 @@ struct ast_node *make_cmd_color_yy(double val1, double val2, double val3) {
     node->children[2] = make_expr_value(val3);
     return node;
 }
+/**
+ * constructor for the home command
+ * @return the node created
+ */
 struct ast_node *make_cmd_home() {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SIMPLE;
     node->u.cmd = CMD_HOME;
     return node;
 }
+/**
+ * constructor for the repeat command
+ * @param expr1 the value of the repeat
+ * @param expr2 the command block to repeat
+ * @return the node created
+ */
 struct ast_node *make_cmd_repeat(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_REPEAT;
     node->u.value = expr1->u.value;
     return node;
 }
+/**
+ * constructor for the set command
+ * @param expr1 the variable name to define
+ * @param expr2 the value to affect to the variable
+ * @return the node created
+ */
 struct ast_node *make_cmd_set(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SET;
@@ -177,6 +278,12 @@ struct ast_node *make_cmd_set(struct ast_node *expr1, struct ast_node *expr2) {
     node->u.value = expr1->u.value;
     return node;
 }
+/**
+ * constructor for the proc command
+ * @param expr1 the name
+ * @param expr2 the command
+ * @return the node created
+ */
 struct ast_node *make_cmd_proc(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_PROC;
@@ -185,7 +292,11 @@ struct ast_node *make_cmd_proc(struct ast_node *expr1, struct ast_node *expr2) {
     //node->children[0] = expr;
     return node;
 }
-
+/**
+ * constructor for the call command
+ * @param expr the name of the procedure to call
+ * @return the node created
+ */
 struct ast_node *make_cmd_call(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_CALL;
@@ -193,7 +304,11 @@ struct ast_node *make_cmd_call(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
-
+/**
+ * constructor for the sin function
+ * @param expr the value to calculate
+ * @return the node result created
+ */
 struct ast_node *make_func_sin(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_FUNC;
@@ -202,7 +317,11 @@ struct ast_node *make_func_sin(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
-
+/**
+ * constructor for the cos function
+ * @param expr the value to calculate
+ * @return the node result created
+ */
 struct ast_node *make_func_cos(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_FUNC;
@@ -211,7 +330,11 @@ struct ast_node *make_func_cos(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
-
+/**
+ * constructor for the tan function
+ * @param expr the value to calculate
+ * @return the node result created
+ */
 struct ast_node *make_func_tan(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_FUNC;
@@ -220,7 +343,12 @@ struct ast_node *make_func_tan(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
-
+/**
+ * constructor for the random function
+ * @param expr1 the lower limit
+ * @param expr2 the upper limit
+ * @return the node result created
+ */
 struct ast_node *make_func_random(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_FUNC;
@@ -230,7 +358,11 @@ struct ast_node *make_func_random(struct ast_node *expr1, struct ast_node *expr2
     node->children[1] = expr2;
     return node;
 }
-
+/**
+ * constructor for the sqrt
+ * @param expr the value to calculate
+ * @return the node result created
+ */
 struct ast_node *make_func_sqrt(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_FUNC;
@@ -287,6 +419,12 @@ void ast_print(const struct ast *self) {
     ast_node_print(self->unit);
 }
 
+/**
+ * function for debug the turtle program
+ * it depends on the kind of the node we want
+ * to display
+ * @param self the node to display
+ */
 void ast_node_print(const struct ast_node *self) {
     if (!self) {
         return;
@@ -366,8 +504,10 @@ void ast_node_print(const struct ast_node *self) {
             fprintf(stderr, "%.1f", self->u.value);
             break;
         case KIND_EXPR_UNOP:
+            print_unary_operand(self);
+            break;
         case KIND_EXPR_BINOP:
-            fprintf(stderr, "%c", self->u.op);
+            print_binary_operand(self);
             break;
         case KIND_EXPR_BLOCK:
         case KIND_EXPR_NAME:
@@ -377,6 +517,14 @@ void ast_node_print(const struct ast_node *self) {
 
     ast_node_print(self->next);
 }
+
+
+/**
+ * we have multiple function for all the print for the
+ * different commands, functions, values and names
+ * So, we display the node and all of his children
+ */
+
 
 void print_cmd_forward(const struct ast_node *self) {
     fprintf(stderr, "fw ");
@@ -564,4 +712,18 @@ void print_func_sqrt(const struct ast_node *self) {
     }
 
     fprintf(stderr, "\n");
+}
+
+void print_binary_operand(const struct ast_node *self) {
+    ast_node_print(self->children[0]);
+
+    fprintf(stderr, " %c ", self->u.op);
+
+    ast_node_print(self->children[1]);
+}
+
+void print_unary_operand(const struct ast_node *self) {
+    fprintf(stderr, "%c", self->u.op);
+
+    ast_node_print(self->children[0]);
 }

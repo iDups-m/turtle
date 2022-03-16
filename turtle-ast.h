@@ -151,6 +151,8 @@ void print_func_cos(const struct ast_node *self);
 void print_func_tan(const struct ast_node *self);
 void print_func_random(const struct ast_node *self);
 void print_func_sqrt(const struct ast_node *self);
+void print_binary_operand(const struct ast_node *self);
+void print_unary_operand(const struct ast_node *self);
 
 // evaluate the tree and generate some basic primitives
 void ast_eval(const struct ast *self, struct context *ctx);

@@ -9,12 +9,12 @@
 
 %option warn 8bit nodefault noyywrap
 
-DIGIT [0-9]
-ID    [A-Z][A-Z0-9]*
-BIG-LETTER  [A-Z]
-LETTER      [A-Za-z]
-HEX         [0-9A-Fa-f]
-INT         0|[1-9][0-9]*
+DIGIT           [0-9]
+ID              [A-Z][A-Z0-9]*
+BIG-LETTER      [A-Z]
+LETTER          [A-Za-z]
+HEX             [0-9A-Fa-f]
+INT             0|[1-9][0-9]*
 
 %%
 
