@@ -571,7 +571,10 @@ void eval_cmd_backward(const struct ast_node *self, struct context *ctx) {
     fprintf(stdout, "\n");
 }
 void eval_cmd_position(const struct ast_node *self, struct context *ctx) {
+    ctx->x = self->children[0]->u.value;
+    ctx->y = self->children[1]->u.value;
 
+    fprintf(stdout, "MoveTo %1.f %1.f\n", ctx->x, ctx->y);
 }
 void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
     ctx->angle += self->children[0]->u.value;
