@@ -288,8 +288,9 @@ struct ast_node *make_cmd_proc(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_PROC;
     node->u.name = expr1->u.name;
-    //node->children_count = 1;
-    //node->children[0] = expr;
+    node->children_count = 2;
+    node->children[0] = expr1;
+    node->children[1] = expr2;
     return node;
 }
 /**
@@ -450,7 +451,92 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
         return;
     }
 
+    switch (self->kind) {
+        case KIND_CMD_SIMPLE:
+            switch (self->u.cmd){
+                case CMD_UP:
+                    eval_cmd_up(self, ctx);
+                    break;
+                case CMD_DOWN:
+                    eval_cmd_down(self, ctx);
+                    break;
+                case CMD_RIGHT:
+                    eval_cmd_right(self, ctx);
+                    break;
+                case CMD_LEFT:
+                    eval_cmd_left(self, ctx);
+                    break;
+                case CMD_HEADING:
+                    eval_cmd_heading(self, ctx);
+                    break;
+                case CMD_FORWARD:
+                    eval_cmd_forward(self, ctx);
+                    break;
+                case CMD_BACKWARD:
+                    eval_cmd_backward(self, ctx);
+                    break;
+                case CMD_POSITION:
+                    eval_cmd_position(self, ctx);
+                    break;
+                case CMD_HOME:
+                    eval_cmd_home(self, ctx);
+                    break;
+                case CMD_COLOR:
+                    eval_cmd_color(self, ctx);
+                    break;
+                case CMD_PRINT:
+                    eval_cmd_print(self, ctx);
+                    break;
+            }
+            break;
+        case KIND_CMD_REPEAT:
+            eval_cmd_repeat(self, ctx);
+            break;
+        case KIND_CMD_BLOCK:
+            //TODO
+        case KIND_CMD_PROC:
+            eval_cmd_proc(self, ctx);
+            break;
+        case KIND_CMD_CALL:
+            eval_cmd_call(self, ctx);
+            break;
+        case KIND_CMD_SET:
+            eval_cmd_set(self, ctx);
+            break;
+        case KIND_EXPR_FUNC:
+            switch (self->u.func) {
+                case FUNC_COS:
+                    eval_func_cos(self, ctx);
+                    break;
+                case FUNC_RANDOM:
+                    eval_func_random(self, ctx);
+                    break;
+                case FUNC_SIN:
+                    eval_func_sin(self, ctx);
+                    break;
+                case FUNC_SQRT:
+                    eval_func_sqrt(self, ctx);
+                    break;
+                case FUNC_TAN:
+                    eval_func_tan(self, ctx);
+                    break;
+            }
+            break;
+        case KIND_EXPR_VALUE:
+            //TODO
+        case KIND_EXPR_UNOP:
+            eval_unary_operand(self, ctx);
+            break;
+        case KIND_EXPR_BINOP:
+            eval_binary_operand(self, ctx);
+            break;
+        case KIND_EXPR_BLOCK:
+        case KIND_EXPR_NAME:
+            //TODO
+            break;
+    }
 
+    ast_node_eval(self->next, ctx);
 }
 
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
