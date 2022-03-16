@@ -372,6 +372,10 @@ struct ast_node *make_func_sqrt(struct ast_node *expr) {
     return node;
 }
 
+/**
+ * free the allocated space for the tree and all his nodes
+ * @param self the whole tree
+ */
 void ast_destroy(struct ast *self) {
     if (!self) {
         return;
@@ -380,10 +384,16 @@ void ast_destroy(struct ast *self) {
     ast_node_destroy(self->unit);
 }
 
+/**
+ * recursive function to free the current node
+ * @param self the current node to free
+ */
 void ast_node_destroy(struct ast_node *self) {
     if (!self) {
         return;
     }
+
+    //TODO : free (str_dup)
 
     if(self->next){
         ast_node_destroy(self->next);
@@ -394,22 +404,26 @@ void ast_node_destroy(struct ast_node *self) {
     free(self);
 }
 
-/*
- * context
+/**
+ * create a context
+ * @param self the context to create as a node
  */
 void context_create(struct context *self) {
 
 }
 
-/*
- * eval
+/**
+ * eval a turtle tree
+ * @param self the three to eval
+ * @param ctx the context
  */
 void ast_eval(const struct ast *self, struct context *ctx) {
 
 }
 
-/*
- * print
+/**
+ * print the commands and all his children
+ * @param self the whole tree to display
  */
 void ast_print(const struct ast *self) {
     if (!self) {
