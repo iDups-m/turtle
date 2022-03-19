@@ -74,6 +74,8 @@ struct ast_node *make_expr_name(char* name) {
  * @return the node created
  */
 struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struct ast_node *expr2) {
+    fprintf(stderr, "make_binary_operand\n");
+
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_BINOP;
     node->u.op = operand;
@@ -81,8 +83,8 @@ struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struc
     node->children[0] = expr1;
     node->children[1] = expr2;
 
-    fprintf(stderr, "val=%f\n", expr1->u.value);
-    fprintf(stderr, "val=%f\n\n", expr2->u.value);
+    //fprintf(stderr, "val=%f\n", expr1->u.value);
+    //fprintf(stderr, "val=%f\n\n", expr2->u.value);
     return node;
 }
 /**
@@ -541,10 +543,11 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             eval_unary_operand(self, ctx);
             break;
         case KIND_EXPR_BINOP:
+            fprintf(stdout, "case KIND_EXPR_BINOP\n");
             eval_binary_operand(self, ctx);
             break;
         case KIND_EXPR_BLOCK:
-            //TODO
+            //TODO c'est quoi ??
         case KIND_EXPR_NAME:
             fprintf(stdout, "%s ", self->u.name);
             break;
@@ -611,7 +614,7 @@ void eval_cmd_heading(const struct ast_node *self, struct context *ctx) {
     ctx->angle = 0;
 }
 void eval_cmd_print(const struct ast_node *self, struct context *ctx) {
-
+    fprintf(stderr, "%f\n", self->u.value);
 }
 void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
     ctx->color.r = self->children[0]->u.value;
@@ -626,7 +629,7 @@ void eval_cmd_home(const struct ast_node *self, struct context *ctx) {
     context_create(ctx);
 }
 void eval_cmd_repeat(const struct ast_node *self, struct context *ctx) {
-    double iter = self->children[0]->u.value;
+    double iter = floor(self->children[0]->u.value);
     for(int i=0; i<iter; ++i){
         ast_node_eval(self->children[1], ctx);
     }
@@ -635,7 +638,7 @@ void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
-
+    // add handling in context
 }
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
 
@@ -659,10 +662,36 @@ void eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_binary_operand(const struct ast_node *self, struct context *ctx) {
+    fprintf(stdout, "eval_binary_operand");
 
+    double value = 0;
+    switch (self->u.op) {
+        case '+':
+            value = self->children[0]->u.value + self->children[1]->u.value;
+            break;
+        case '-':
+            value = self->children[0]->u.value - self->children[1]->u.value;
+            break;
+        case '*':
+            value = self->children[0]->u.value * self->children[1]->u.value;
+            break;
+        case '/':
+            value = self->children[0]->u.value / self->children[1]->u.value;
+            break;
+    }
+    fprintf(stdout, "%f", value);
 }
 void eval_unary_operand(const struct ast_node *self, struct context *ctx) {
-
+    double value = 0;
+    switch (self->u.op) {
+        case '-':
+            value = -self->children[0]->u.value;
+            break;
+        case '+':
+            value = self->children[0]->u.value;
+            break;
+    }
+    fprintf(stdout, "%f", value);
 }
 
 /**
@@ -770,6 +799,8 @@ void ast_node_print(const struct ast_node *self) {
             print_binary_operand(self);
             break;
         case KIND_EXPR_BLOCK:
+            //TODO: faire quoi ??
+            break;
         case KIND_EXPR_NAME:
             fprintf(stderr, "%s", self->u.name);
             break;
@@ -988,7 +1019,7 @@ void print_func_sqrt(const struct ast_node *self) {
 }
 
 void print_binary_operand(const struct ast_node *self) {
-    fprintf(stderr, "binary_operand\n");
+    fprintf(stderr, "print_binary_operand\n");
     ast_node_print(self->children[0]);
 
     fprintf(stderr, " %c ", self->u.op);
