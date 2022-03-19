@@ -188,4 +188,7 @@ void eval_func_sqrt(const struct ast_node *self, struct context *ctx);
 void eval_binary_operand(const struct ast_node *self, struct context *ctx);
 void eval_unary_operand(const struct ast_node *self, struct context *ctx);
 
+//useful function
+double degre_to_radian(double angle);
+
 #endif /* TURTLE_AST_H */

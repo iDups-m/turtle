@@ -63,7 +63,7 @@ void yyerror(struct ast *ret, const char *);
 
 /**
  * Priority rules :
- * Indicates associativity and priority for arithmetic operations
+ * Indicates associativity and priority for arithmetic operations.
  */
 %left '+' '-'
 %left '*' '/'

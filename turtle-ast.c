@@ -80,6 +80,9 @@ struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struc
     node->children_count = 2;
     node->children[0] = expr1;
     node->children[1] = expr2;
+
+    fprintf(stderr, "val=%f\n", expr1->u.value);
+    fprintf(stderr, "val=%f\n\n", expr2->u.value);
     return node;
 }
 /**
@@ -262,7 +265,7 @@ struct ast_node *make_cmd_home() {
 struct ast_node *make_cmd_repeat(struct ast_node *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_REPEAT;
-    node->u.value = expr1->u.value;
+    //node->u.value = expr1->u.value;
     node->children_count = 2;
     node->children[0] = expr1;
     node->children[1] = expr2;
@@ -407,6 +410,8 @@ void ast_destroy(struct ast *self) {
  * @param self the current node to free
  */
 void ast_node_destroy(struct ast_node *self) {
+    //TODO: problem with random()
+
     if (!self) {
         return;
     }
@@ -549,24 +554,29 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
 }
 
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
+    fprintf(stdout, "\tangle=%f\n", ctx->angle);
 
-    ctx->y -= self->children[0]->u.value;
+    double angle_radian = degre_to_radian(ctx->angle);
+    ctx->x += sin(angle_radian) * self->children[0]->u.value;
+    ctx->y -= cos(angle_radian) * self->children[0]->u.value;
 
     if (ctx->up) {
-        fprintf(stdout, "MoveTo %1.f %1.f", ctx->x, ctx->y);
+        fprintf(stdout, "MoveTo %f %f", ctx->x, ctx->y);
     } else {
-        fprintf(stdout, "LineTo %1.f %1.f", ctx->x, ctx->y);
+        fprintf(stdout, "LineTo %f %f", ctx->x, ctx->y);
     }
 
     fprintf(stdout, "\n");
 }
 void eval_cmd_backward(const struct ast_node *self, struct context *ctx) {
-    ctx->y += self->children[0]->u.value;
+    double angle_radian = degre_to_radian(ctx->angle);
+    ctx->x += sin(angle_radian) * self->children[0]->u.value;
+    ctx->y += cos(angle_radian) * self->children[0]->u.value;
 
     if (ctx->up) {
-        fprintf(stdout, "MoveTo %1.f %1.f", ctx->x, ctx->y);
+        fprintf(stdout, "MoveTo %f %f", ctx->x, ctx->y);
     } else {
-        fprintf(stdout, "LineTo %1.f %1.f", ctx->x, ctx->y);
+        fprintf(stdout, "LineTo %f %f", ctx->x, ctx->y);
     }
 
     fprintf(stdout, "\n");
@@ -575,32 +585,30 @@ void eval_cmd_position(const struct ast_node *self, struct context *ctx) {
     ctx->x = self->children[0]->u.value;
     ctx->y = self->children[1]->u.value;
 
-    fprintf(stdout, "MoveTo %1.f %1.f\n", ctx->x, ctx->y);
+    fprintf(stdout, "MoveTo %f %1.f\n", ctx->x, ctx->y);
 }
 void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
     ctx->angle += self->children[0]->u.value;
-
     if (ctx->angle > 360) {
         ctx->angle -= 360;
     }
 
-    if (ctx->angle < 360) {
+    if (ctx->angle < 0) {
         ctx->angle += 360;
     }
 }
 void eval_cmd_left(const struct ast_node *self, struct context *ctx) {
     ctx->angle -= self->children[0]->u.value;
-
     if (ctx->angle > 360) {
         ctx->angle -= 360;
     }
 
-    if (ctx->angle < 360) {
+    if (ctx->angle < 0) {
         ctx->angle += 360;
     }
 }
 void eval_cmd_heading(const struct ast_node *self, struct context *ctx) {
-
+    ctx->angle = 0;
 }
 void eval_cmd_print(const struct ast_node *self, struct context *ctx) {
 
@@ -610,15 +618,18 @@ void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
     ctx->color.g = self->children[1]->u.value;
     ctx->color.b = self->children[2]->u.value;
 
-    fprintf(stdout, "Color %1.f %1.f %1.f", ctx->color.r, ctx->color.g, ctx->color.b);
+    fprintf(stdout, "Color %f %f %f", ctx->color.r, ctx->color.g, ctx->color.b);
 
     fprintf(stdout, "\n");
 }
 void eval_cmd_home(const struct ast_node *self, struct context *ctx) {
-
+    context_create(ctx);
 }
 void eval_cmd_repeat(const struct ast_node *self, struct context *ctx) {
-
+    double iter = self->children[0]->u.value;
+    for(int i=0; i<iter; ++i){
+        ast_node_eval(self->children[1], ctx);
+    }
 }
 void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
 
@@ -630,7 +641,7 @@ void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_cmd_block(const struct ast_node *self, struct context *ctx) {
-
+    ast_node_eval(self->children[0], ctx);
 }
 void eval_func_sin(const struct ast_node *self, struct context *ctx) {
 
@@ -977,6 +988,7 @@ void print_func_sqrt(const struct ast_node *self) {
 }
 
 void print_binary_operand(const struct ast_node *self) {
+    fprintf(stderr, "binary_operand\n");
     ast_node_print(self->children[0]);
 
     fprintf(stderr, " %c ", self->u.op);
@@ -988,4 +1000,9 @@ void print_unary_operand(const struct ast_node *self) {
     fprintf(stderr, "%c", self->u.op);
 
     ast_node_print(self->children[0]);
+}
+
+
+double degre_to_radian(double angle){
+    return (angle*PI)/180;
 }

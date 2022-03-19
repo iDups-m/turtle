@@ -74,24 +74,21 @@ true                                                                        { pr
 
 
 /*
- * Step 1 :
- * Recognise commands and return keywords
+ * Lexer : Transform strings into tokens, first step in the project.
+ * Tokens will be received by the parser.
+ *
+ * Part 1 (line 21-40) :
+ * Recognise commands and return keywords.
+ *
+ * Part 2 (line 42-50) :
+ * Predefined keywords of some color.
+ * Indicates rgb (red/blue/green) values of the keywords.
+ * Values are stored in the structure color of yylval.
+ *
+ * Part 3 (line 52-62 ) :
+ * Recognise grammar symbols.
+ *
+ * Part 4 (line 64-71) :
+ * Using regex to catch names, numbers, float... They are stored in yylval and yytext to use it in the parser.
+ * Ignore comments and check that they are not other symbols.
  */
-
-/**
- * Step 2 :
- * Keywords of some color
- * Indicates rgb (red/blue/green) values of keywords
- * Store it in the structure color of yylval
- */
-
-/**
- * Step 3 :
- * Recognise grammar symbols
- */
-
- /**
-  * Step 4 :
-  * Regex to catch names, numbers, float...
-  * In some case return the value and the name
-  */
