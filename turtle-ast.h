@@ -163,7 +163,7 @@ void print_unary_operand(const struct ast_node *self);
 
 // evaluate the tree and generate some basic primitives
 void ast_eval(const struct ast *self, struct context *ctx);
-void ast_node_eval(const struct ast_node *self, struct context *ctx);
+double ast_node_eval(const struct ast_node *self, struct context *ctx);
 
 //eval elements
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx);
@@ -185,8 +185,8 @@ void eval_func_cos(const struct ast_node *self, struct context *ctx);
 void eval_func_tan(const struct ast_node *self, struct context *ctx);
 void eval_func_random(const struct ast_node *self, struct context *ctx);
 void eval_func_sqrt(const struct ast_node *self, struct context *ctx);
-void eval_binary_operand(const struct ast_node *self, struct context *ctx);
-void eval_unary_operand(const struct ast_node *self, struct context *ctx);
+double eval_binary_operand(const struct ast_node *self, struct context *ctx);
+double eval_unary_operand(const struct ast_node *self, struct context *ctx);
 
 //useful function
 double degre_to_radian(double angle);

@@ -74,8 +74,6 @@ struct ast_node *make_expr_name(char* name) {
  * @return the node created
  */
 struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struct ast_node *expr2) {
-    fprintf(stderr, "make_binary_operand\n");
-
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_BINOP;
     node->u.op = operand;
@@ -459,9 +457,9 @@ void ast_eval(const struct ast *self, struct context *ctx) {
     ast_node_eval(self->unit, ctx);
 }
 
-void ast_node_eval(const struct ast_node *self, struct context *ctx) {
+double ast_node_eval(const struct ast_node *self, struct context *ctx) {
     if (!self) {
-        return;
+        return -1;
     }
 
     switch (self->kind) {
@@ -537,15 +535,11 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             }
             break;
         case KIND_EXPR_VALUE:
-            //fprintf(stdout, "%.1f ", self->u.value);
-            break;
+            return self->u.value;
         case KIND_EXPR_UNOP:
-            eval_unary_operand(self, ctx);
-            break;
+            return eval_unary_operand(self, ctx);
         case KIND_EXPR_BINOP:
-            fprintf(stdout, "case KIND_EXPR_BINOP\n");
-            eval_binary_operand(self, ctx);
-            break;
+            return eval_binary_operand(self, ctx);
         case KIND_EXPR_BLOCK:
             //TODO c'est quoi ??
         case KIND_EXPR_NAME:
@@ -553,15 +547,14 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             break;
     }
 
-    ast_node_eval(self->next, ctx);
+    return ast_node_eval(self->next, ctx);
 }
 
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
-    fprintf(stdout, "\tangle=%f\n", ctx->angle);
-
     double angle_radian = degre_to_radian(ctx->angle);
-    ctx->x += sin(angle_radian) * self->children[0]->u.value;
-    ctx->y -= cos(angle_radian) * self->children[0]->u.value;
+    double value = ast_node_eval(self->children[0], ctx);
+    ctx->x += sin(angle_radian) * value;
+    ctx->y -= cos(angle_radian) * value;
 
     if (ctx->up) {
         fprintf(stdout, "MoveTo %f %f", ctx->x, ctx->y);
@@ -573,8 +566,9 @@ void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
 }
 void eval_cmd_backward(const struct ast_node *self, struct context *ctx) {
     double angle_radian = degre_to_radian(ctx->angle);
-    ctx->x += sin(angle_radian) * self->children[0]->u.value;
-    ctx->y += cos(angle_radian) * self->children[0]->u.value;
+    double value = ast_node_eval(self->children[0], ctx);
+    ctx->x += sin(angle_radian) * value;
+    ctx->y += cos(angle_radian) * value;
 
     if (ctx->up) {
         fprintf(stdout, "MoveTo %f %f", ctx->x, ctx->y);
@@ -585,13 +579,13 @@ void eval_cmd_backward(const struct ast_node *self, struct context *ctx) {
     fprintf(stdout, "\n");
 }
 void eval_cmd_position(const struct ast_node *self, struct context *ctx) {
-    ctx->x = self->children[0]->u.value;
-    ctx->y = self->children[1]->u.value;
+    ctx->x = ast_node_eval(self->children[0], ctx);
+    ctx->y = ast_node_eval(self->children[1], ctx);
 
     fprintf(stdout, "MoveTo %f %1.f\n", ctx->x, ctx->y);
 }
 void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
-    ctx->angle += self->children[0]->u.value;
+    ctx->angle += ast_node_eval(self->children[0], ctx);
     if (ctx->angle > 360) {
         ctx->angle -= 360;
     }
@@ -601,7 +595,7 @@ void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
     }
 }
 void eval_cmd_left(const struct ast_node *self, struct context *ctx) {
-    ctx->angle -= self->children[0]->u.value;
+    ctx->angle -= ast_node_eval(self->children[0], ctx);
     if (ctx->angle > 360) {
         ctx->angle -= 360;
     }
@@ -617,19 +611,17 @@ void eval_cmd_print(const struct ast_node *self, struct context *ctx) {
     fprintf(stderr, "%f\n", self->u.value);
 }
 void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
-    ctx->color.r = self->children[0]->u.value;
-    ctx->color.g = self->children[1]->u.value;
-    ctx->color.b = self->children[2]->u.value;
+    ctx->color.r = ast_node_eval(self->children[0], ctx);
+    ctx->color.g = ast_node_eval(self->children[1], ctx);
+    ctx->color.b = ast_node_eval(self->children[2], ctx);
 
-    fprintf(stdout, "Color %f %f %f", ctx->color.r, ctx->color.g, ctx->color.b);
-
-    fprintf(stdout, "\n");
+    fprintf(stdout, "Color %f %f %f\n", ctx->color.r, ctx->color.g, ctx->color.b);
 }
 void eval_cmd_home(const struct ast_node *self, struct context *ctx) {
     context_create(ctx);
 }
 void eval_cmd_repeat(const struct ast_node *self, struct context *ctx) {
-    double iter = floor(self->children[0]->u.value);
+    double iter = floor(ast_node_eval(self->children[0], ctx));
     for(int i=0; i<iter; ++i){
         ast_node_eval(self->children[1], ctx);
     }
@@ -661,37 +653,36 @@ void eval_func_random(const struct ast_node *self, struct context *ctx) {
 void eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
 
 }
-void eval_binary_operand(const struct ast_node *self, struct context *ctx) {
-    fprintf(stdout, "eval_binary_operand");
-
-    double value = 0;
+double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
+    double value = 0.0;
     switch (self->u.op) {
         case '+':
-            value = self->children[0]->u.value + self->children[1]->u.value;
+            value = ast_node_eval(self->children[0],ctx) + ast_node_eval(self->children[1],ctx);
             break;
         case '-':
-            value = self->children[0]->u.value - self->children[1]->u.value;
+            value = ast_node_eval(self->children[0],ctx) - ast_node_eval(self->children[1],ctx);
             break;
         case '*':
-            value = self->children[0]->u.value * self->children[1]->u.value;
+            value = ast_node_eval(self->children[0],ctx) * ast_node_eval(self->children[1],ctx);
             break;
         case '/':
-            value = self->children[0]->u.value / self->children[1]->u.value;
+            value = ast_node_eval(self->children[0],ctx) / ast_node_eval(self->children[1],ctx);
             break;
     }
-    fprintf(stdout, "%f", value);
+    //fprintf(stdout, "%f", value);
+    return value;
 }
-void eval_unary_operand(const struct ast_node *self, struct context *ctx) {
+double eval_unary_operand(const struct ast_node *self, struct context *ctx) {
     double value = 0;
     switch (self->u.op) {
         case '-':
-            value = -self->children[0]->u.value;
+            value = -ast_node_eval(self->children[0],ctx);
             break;
         case '+':
-            value = self->children[0]->u.value;
+            value = ast_node_eval(self->children[0],ctx);
             break;
     }
-    fprintf(stdout, "%f", value);
+    return value;
 }
 
 /**
