@@ -418,14 +418,14 @@ void ast_node_destroy(struct ast_node *self) {
         return;
     }
 
-    if(self->kind == KIND_EXPR_NAME){
+    if(self->kind == KIND_EXPR_NAME) {
         free(self->u.name);
     }
 
-    if(self->next){
+    if(self->next) {
         ast_node_destroy(self->next);
     }
-    for(int i=0; i<self->children_count; ++i){
+    for(int i=0; i<self->children_count; ++i) {
         ast_node_destroy(self->children[i]);
     }
     free(self);
@@ -445,6 +445,13 @@ void context_create(struct context *self) {
     self->color.g = 0.0;
     self->color.b = 0.0;
 }
+
+/**
+ * we have multiple function for all the eval for the
+ * different commands, functions, values and names
+ * So, we display LineTo, MoveTo or color and calculate
+ * the different values in the functions
+ */
 
 /**
  * eval a turtle tree
@@ -547,7 +554,7 @@ void ast_node_eval(const struct ast_node *self, struct context *ctx) {
             eval_binary_operand(self, ctx);
             break;
         case KIND_EXPR_BLOCK:
-            //TODO c'est quoi ??
+            //TODO block { cmds }
         case KIND_EXPR_NAME:
             fprintf(stdout, "%s ", self->u.name);
             break;
@@ -647,19 +654,30 @@ void eval_cmd_block(const struct ast_node *self, struct context *ctx) {
     ast_node_eval(self->children[0], ctx);
 }
 void eval_func_sin(const struct ast_node *self, struct context *ctx) {
-
+    double value = self->children[0]->u.value;
+    double res = sin(value);
+    //TODO : do something with res
 }
 void eval_func_cos(const struct ast_node *self, struct context *ctx) {
-
+    double value = self->children[0]->u.value;
+    double res = cos(value);
+    //TODO : do something with res
 }
 void eval_func_tan(const struct ast_node *self, struct context *ctx) {
-
+    double value = self->children[0]->u.value;
+    double res = tan(value);
+    //TODO : do something with res
 }
 void eval_func_random(const struct ast_node *self, struct context *ctx) {
-
+    int upper = self->children[0]->u.value;
+    int lower = self->children[1]->u.value;
+    double randNum = (rand() % (upper - lower + 1)) + lower;
+    //TODO : do something with randNum
 }
 void eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
-
+    double value = self->children[0]->u.value;
+    double res = sqrt(value);
+    //TODO : do something with res
 }
 void eval_binary_operand(const struct ast_node *self, struct context *ctx) {
     fprintf(stdout, "eval_binary_operand");
