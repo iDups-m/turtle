@@ -180,11 +180,11 @@ void eval_cmd_set(const struct ast_node *self, struct context *ctx);
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx);
 void eval_cmd_call(const struct ast_node *self, struct context *ctx);
 void eval_cmd_block(const struct ast_node *self, struct context *ctx);
-void eval_func_sin(const struct ast_node *self, struct context *ctx);
-void eval_func_cos(const struct ast_node *self, struct context *ctx);
-void eval_func_tan(const struct ast_node *self, struct context *ctx);
-void eval_func_random(const struct ast_node *self, struct context *ctx);
-void eval_func_sqrt(const struct ast_node *self, struct context *ctx);
+double eval_func_sin(const struct ast_node *self, struct context *ctx);
+double eval_func_cos(const struct ast_node *self, struct context *ctx);
+double eval_func_tan(const struct ast_node *self, struct context *ctx);
+double eval_func_random(const struct ast_node *self, struct context *ctx);
+double eval_func_sqrt(const struct ast_node *self, struct context *ctx);
 double eval_binary_operand(const struct ast_node *self, struct context *ctx);
 double eval_unary_operand(const struct ast_node *self, struct context *ctx);
 

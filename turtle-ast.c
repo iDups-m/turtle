@@ -525,20 +525,15 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
         case KIND_EXPR_FUNC:
             switch (self->u.func) {
                 case FUNC_COS:
-                    eval_func_cos(self, ctx);
-                    break;
+                    return eval_func_cos(self, ctx);
                 case FUNC_RANDOM:
-                    eval_func_random(self, ctx);
-                    break;
+                    return eval_func_random(self, ctx);
                 case FUNC_SIN:
-                    eval_func_sin(self, ctx);
-                    break;
+                    return eval_func_sin(self, ctx);
                 case FUNC_SQRT:
-                    eval_func_sqrt(self, ctx);
-                    break;
+                    return eval_func_sqrt(self, ctx);
                 case FUNC_TAN:
-                    eval_func_tan(self, ctx);
-                    break;
+                    return eval_func_tan(self, ctx);
             }
             break;
         case KIND_EXPR_VALUE:
@@ -646,31 +641,32 @@ void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
 void eval_cmd_block(const struct ast_node *self, struct context *ctx) {
     ast_node_eval(self->children[0], ctx);
 }
-void eval_func_sin(const struct ast_node *self, struct context *ctx) {
+double eval_func_sin(const struct ast_node *self, struct context *ctx) {
     double value = ast_node_eval(self->children[0], ctx);
     double res = sin(value);
-    //TODO : do something with res
+    return res;
 }
-void eval_func_cos(const struct ast_node *self, struct context *ctx) {
+double eval_func_cos(const struct ast_node *self, struct context *ctx) {
     double value = ast_node_eval(self->children[0], ctx);
     double res = cos(value);
-    //TODO : do something with res
+    return res;
 }
-void eval_func_tan(const struct ast_node *self, struct context *ctx) {
+double eval_func_tan(const struct ast_node *self, struct context *ctx) {
     double value = ast_node_eval(self->children[0], ctx);
     double res = tan(value);
-    //TODO : do something with res
+    return res;
 }
-void eval_func_random(const struct ast_node *self, struct context *ctx) {
+double eval_func_random(const struct ast_node *self, struct context *ctx) {
+    // TODO : core dump !
     int upper = ast_node_eval(self->children[0], ctx);
     int lower = ast_node_eval(self->children[1], ctx);
     double randNum = (rand() % (upper - lower + 1)) + lower;
-    //TODO : do something with randNum
+    return randNum;
 }
-void eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
+double eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
     double value = ast_node_eval(self->children[0], ctx);
     double res = sqrt(value);
-    //TODO : do something with res
+    return res;
 }
 double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
     double value = 0.0;
