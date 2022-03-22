@@ -391,6 +391,18 @@ struct ast_node *make_func_sqrt(struct ast_node *expr) {
     node->children[0] = expr;
     return node;
 }
+/**
+ * constructor for the expression block
+ * @param expr the block
+ * @return the node result created
+ */
+struct ast_node *make_expr_block(struct ast_node *expr){
+    struct ast_node *node = calloc(1, sizeof(struct ast_node));
+    node->kind = KIND_EXPR_BLOCK;
+    node->children_count = 1;
+    node->children[0] = expr;
+    return node;
+}
 
 /**
  * free the allocated space for the tree and all his nodes
@@ -410,8 +422,6 @@ void ast_destroy(struct ast *self) {
  * @param self the current node to free
  */
 void ast_node_destroy(struct ast_node *self) {
-    //TODO: problem with random()
-
     if (!self) {
         return;
     }
@@ -545,7 +555,7 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
         case KIND_EXPR_BINOP:
             return eval_binary_operand(self, ctx);
         case KIND_EXPR_BLOCK:
-            //TODO block { cmds }
+            //TODO
             break;
         case KIND_EXPR_NAME:
             fprintf(stdout, "%s ", self->u.name);

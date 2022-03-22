@@ -123,7 +123,7 @@ expr:
     | MATH_COS expr			{ $$ = make_func_cos($2); }
     | MATH_TAN expr			{ $$ = make_func_tan($2); }
     | MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
-    /*| '(' expr ')'         		{ $$ = ; }*/
+    | '(' expr ')'         		{ $$ = make_expr_block($2); }
 ;
 
 %%

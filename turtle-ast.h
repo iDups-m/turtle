@@ -101,6 +101,7 @@ struct ast_node *make_func_cos(struct ast_node *expr);
 struct ast_node *make_func_tan(struct ast_node *expr);
 struct ast_node *make_func_random(struct ast_node *expr1, struct ast_node *expr2);
 struct ast_node *make_func_sqrt(struct ast_node *expr);
+struct ast_node *make_expr_block(struct ast_node *expr);
 
 
 // root of the abstract syntax tree
