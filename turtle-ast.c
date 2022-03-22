@@ -688,7 +688,6 @@ double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
             value = ast_node_eval(self->children[0],ctx) / ast_node_eval(self->children[1],ctx);
             break;
     }
-    //fprintf(stdout, "%f", value);
     return value;
 }
 double eval_unary_operand(const struct ast_node *self, struct context *ctx) {
