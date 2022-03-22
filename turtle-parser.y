@@ -120,10 +120,10 @@ expr:
     | expr '/' expr       		{ $$ = make_binary_operand($1, '/', $3); }
     | '-' expr %prec NEG   		{ $$ = make_unary_operand('-', $2); }
     | MATH_RANDOM '(' expr ',' expr ')' { $$ = make_func_random($3, $5); }
-    | MATH_SIN expr			{ $$ = make_func_sin($2); }
-    | MATH_COS expr			{ $$ = make_func_cos($2); }
-    | MATH_TAN expr			{ $$ = make_func_tan($2); }
-    | MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
+    | MATH_SIN '(' expr ')'		{ $$ = make_func_sin($2); }
+    | MATH_COS '(' expr ')'		{ $$ = make_func_cos($2); }
+    | MATH_TAN '(' expr ')'		{ $$ = make_func_tan($2); }
+    | MATH_SQRT '(' expr ')'		{ $$ = make_func_sqrt($2); }
     | '(' expr ')'         		{ $$ = make_expr_block($2); }
 ;
 
