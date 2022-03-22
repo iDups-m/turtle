@@ -451,6 +451,24 @@ void context_create(struct context *self) {
  * the different values in the functions
  */
 
+//TODO : olympic problem : multiple value in the same line such as
+/*
+ * w 50 right 90 fw 165 left 90
+ * color 1, 0, 0 call CIRCLE
+
+ * left 90 fw 165
+ * color 0.7, 0.7, 0.7 call CIRCLE
+
+ * fw 165
+ * color 0, 0, 1 call CIRCLE
+
+ * right 40 bw 110 right 140
+ * color 1, 1, 0 call CIRCLE
+
+ * fw 165 color 0, 1, 0
+ * call CIRCLE
+ */
+
 /**
  * eval a turtle tree
  * @param self the three to eval
@@ -657,11 +675,10 @@ double eval_func_tan(const struct ast_node *self, struct context *ctx) {
     return res;
 }
 double eval_func_random(const struct ast_node *self, struct context *ctx) {
-    // TODO : core dump !
-    int upper = ast_node_eval(self->children[0], ctx);
-    int lower = ast_node_eval(self->children[1], ctx);
-    double randNum = (rand() % (upper - lower + 1)) + lower;
-    return randNum;
+    double upper = ast_node_eval(self->children[0], ctx);
+    double lower = ast_node_eval(self->children[1], ctx);
+    double f = (double) rand() / RAND_MAX;
+    return lower + f * (upper - lower);
 }
 double eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
     double value = ast_node_eval(self->children[0], ctx);
