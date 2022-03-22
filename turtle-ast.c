@@ -451,23 +451,7 @@ void context_create(struct context *self) {
  * the different values in the functions
  */
 
-//TODO : olympic problem : multiple value in the same line such as
-/*
- * w 50 right 90 fw 165 left 90
- * color 1, 0, 0 call CIRCLE
 
- * left 90 fw 165
- * color 0.7, 0.7, 0.7 call CIRCLE
-
- * fw 165
- * color 0, 0, 1 call CIRCLE
-
- * right 40 bw 110 right 140
- * color 1, 1, 0 call CIRCLE
-
- * fw 165 color 0, 1, 0
- * call CIRCLE
- */
 
 /**
  * eval a turtle tree
@@ -568,14 +552,17 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
             break;
     }
 
-    return ast_node_eval(self->next, ctx);
+    if(self->next) {
+        return ast_node_eval(self->next, ctx);
+    }
+    return 0.0;
 }
 
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
     double angle_radian = degre_to_radian(ctx->angle);
     double value = ast_node_eval(self->children[0], ctx);
-    ctx->x += sin(angle_radian) * value;
-    ctx->y -= cos(angle_radian) * value;
+    ctx->x -= sin(ctx->angle * (PI / 180) ) * value;
+    ctx->y -= cos(ctx->angle * (PI / 180) ) * value;
 
     if (ctx->up) {
         fprintf(stdout, "MoveTo %f %f", ctx->x, ctx->y);
@@ -1058,5 +1045,5 @@ void print_unary_operand(const struct ast_node *self) {
 
 
 double degre_to_radian(double angle){
-    return (angle*PI)/180;
+    return angle * (PI/180);
 }
