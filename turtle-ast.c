@@ -561,8 +561,8 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
     double angle_radian = degre_to_radian(ctx->angle);
     double value = ast_node_eval(self->children[0], ctx);
-    ctx->x -= sin(ctx->angle * (PI / 180) ) * value;
-    ctx->y -= cos(ctx->angle * (PI / 180) ) * value;
+    ctx->x -= sin(angle_radian) * value;
+    ctx->y -= cos(angle_radian) * value;
 
     if (ctx->up) {
         fprintf(stdout, "MoveTo %f %f", ctx->x, ctx->y);
@@ -593,7 +593,7 @@ void eval_cmd_position(const struct ast_node *self, struct context *ctx) {
     fprintf(stdout, "MoveTo %f %1.f\n", ctx->x, ctx->y);
 }
 void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
-    ctx->angle += ast_node_eval(self->children[0], ctx);
+    ctx->angle -= ast_node_eval(self->children[0], ctx);
     if (ctx->angle > 360) {
         ctx->angle -= 360;
     }
@@ -603,7 +603,7 @@ void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
     }
 }
 void eval_cmd_left(const struct ast_node *self, struct context *ctx) {
-    ctx->angle -= ast_node_eval(self->children[0], ctx);
+    ctx->angle += ast_node_eval(self->children[0], ctx);
     if (ctx->angle > 360) {
         ctx->angle -= 360;
     }

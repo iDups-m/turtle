@@ -61,6 +61,8 @@ void yyerror(struct ast *ret, const char *);
 %token		  MATH_RANDOM   "random"
 %token		  MATH_SQRT   	"sqrt"
 
+%type <node> unit cmds cmd expr
+
 /**
  * Priority rules :
  * Indicates associativity and priority for arithmetic operations.
@@ -68,8 +70,6 @@ void yyerror(struct ast *ret, const char *);
 %left '+' '-'
 %left '*' '/'
 %precedence NEG
-
-%type <node> unit cmds cmd expr
 
 %%
 
@@ -111,7 +111,6 @@ cmd:
  */
 expr:
     'q'                 		{ exit(0); }
-    | MATH_RANDOM '(' expr ',' expr ')' { $$ = make_func_random($3, $5); }
     | VALUE             		{ $$ = make_expr_value($1); }
     | NAME                  		{ $$ = make_expr_name($1); }
     | expr '+' expr       		{ $$ = make_binary_operand($1, '+', $3); }
@@ -119,7 +118,12 @@ expr:
     | expr '*' expr       		{ $$ = make_binary_operand($1, '*', $3); }
     | expr '/' expr       		{ $$ = make_binary_operand($1, '/', $3); }
     | '-' expr %prec NEG   		{ $$ = make_unary_operand('-', $2); }
-    /*| '(' expr ',' expr ')'         	{ $$ = ; }*/
+    | MATH_RANDOM '(' expr ',' expr ')' { $$ = make_func_random($3, $5); }
+    | MATH_SIN expr			{ $$ = make_func_sin($2); }
+    | MATH_COS expr			{ $$ = make_func_cos($2); }
+    | MATH_TAN expr			{ $$ = make_func_tan($2); }
+    | MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
+    /*| '(' expr ')'         		{ $$ = ; }*/
 ;
 
 %%
@@ -128,10 +132,3 @@ void yyerror(struct ast *ret, const char *msg) {
   (void) ret;
   fprintf(stderr, "%s\n", msg);
 }
-
-/*
-    | MATH_SIN expr			{ $$ = make_func_sin($2); }
-    | MATH_COS expr			{ $$ = make_func_cos($2); }
-    | MATH_TAN expr			{ $$ = make_func_tan($2); }
-    | MATH_SQRT expr			{ $$ = make_func_sqrt($2); }
-    */
