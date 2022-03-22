@@ -456,7 +456,7 @@ void context_create(struct context *self) {
     self->handler->first = NULL;
 }
 
-void handler_proc_push(struct context *ctx, const struct ast_node *self, char* name){
+void handler_proc_push(struct context *ctx, struct ast_node *self, char* name){
     assert(self);
     assert(ctx->handler->first);
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
@@ -481,17 +481,17 @@ void handler_proc_push(struct context *ctx, const struct ast_node *self, char* n
 
 }
 
-void list_destroy(struct list *self) {
-    assert(self);
-    struct list_node *curr = self->first;
+void handler_proc_destroy(struct context *ctx) {
+    assert(ctx->handler->first);
+    struct proc_handling_node *curr = ctx->handler->first;
 
     while(curr){
-        struct list_node *tmp = curr;
+        struct proc_handling_node *tmp = curr;
         curr = curr->next;
         free(tmp);
         tmp = NULL;
     }
-    self->first = NULL;
+    ctx->handler->first = NULL;
 }
 
 
@@ -598,7 +598,8 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
             //TODO
             break;
         case KIND_EXPR_NAME:
-            fprintf(stdout, "%s ", self->u.name);
+            // nothing to do
+            //fprintf(stdout, "%s ", self->u.name);
             break;
     }
 
@@ -858,7 +859,7 @@ void ast_node_print(const struct ast_node *self) {
             print_binary_operand(self);
             break;
         case KIND_EXPR_BLOCK:
-            //TODO: faire quoi ??
+            //TODO
             break;
         case KIND_EXPR_NAME:
             fprintf(stderr, "%s", self->u.name);

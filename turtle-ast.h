@@ -140,6 +140,8 @@ struct context {
 
 // create an initial context
 void context_create(struct context *self);
+void handler_proc_push(struct context *ctx, struct ast_node *self, char* name);
+void handler_proc_destroy(struct context *ctx);
 
 // print the tree as if it was a Turtle program
 void ast_print(const struct ast *self);

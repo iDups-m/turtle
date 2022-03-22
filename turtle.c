@@ -43,6 +43,7 @@ int main() {
   //ast_print(&root);
 
   ast_destroy(&root);
+  handler_proc_destroy(&ctx);
 
   return ret;
 }
