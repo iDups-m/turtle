@@ -453,12 +453,13 @@ void context_create(struct context *self) {
     self->color.g = 0.0;
     self->color.b = 0.0;
 
+    self->handler = calloc(1, sizeof(struct proc_handling));
     self->handler->first = NULL;
 }
 
 void handler_proc_push(struct context *ctx, struct ast_node *self, char* name){
     assert(self);
-    assert(ctx->handler->first);
+    assert(ctx->handler);
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
     if(node == NULL){
         printf("Error allocation\n");
@@ -467,22 +468,17 @@ void handler_proc_push(struct context *ctx, struct ast_node *self, char* name){
     node->name = name;
     node->astNode = self;
 
-    struct proc_handling_node *curr = ctx->handler->first;
-    while((curr)&&(curr->next)){
-        curr = curr->next;
-    }
-    if(curr == NULL){
+    if(ctx->handler->first == NULL){
         ctx->handler->first = node;
         node->next = NULL;
         return ;
     }
-    curr->next = node;
-    node->next = NULL;
-
+    node->next = ctx->handler->first;
+    ctx->handler->first = node;
 }
 
 void handler_proc_destroy(struct context *ctx) {
-    assert(ctx->handler->first);
+    assert(ctx->handler);
     struct proc_handling_node *curr = ctx->handler->first;
 
     while(curr){
@@ -492,6 +488,7 @@ void handler_proc_destroy(struct context *ctx) {
         tmp = NULL;
     }
     ctx->handler->first = NULL;
+    free(ctx->handler);
 }
 
 
