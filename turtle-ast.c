@@ -453,8 +453,47 @@ void context_create(struct context *self) {
     self->color.g = 0.0;
     self->color.b = 0.0;
 
-    self->handler = calloc(1, sizeof(struct proc_handling));
+    self->handler->first = NULL;
 }
+
+void handler_proc_push(struct context *ctx, const struct ast_node *self, char* name){
+    assert(self);
+    assert(ctx->handler->first);
+    struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
+    if(node == NULL){
+        printf("Error allocation\n");
+        return ;
+    }
+    node->name = name;
+    node->astNode = self;
+
+    struct proc_handling_node *curr = ctx->handler->first;
+    while((curr)&&(curr->next)){
+        curr = curr->next;
+    }
+    if(curr == NULL){
+        ctx->handler->first = node;
+        node->next = NULL;
+        return ;
+    }
+    curr->next = node;
+    node->next = NULL;
+
+}
+
+void list_destroy(struct list *self) {
+    assert(self);
+    struct list_node *curr = self->first;
+
+    while(curr){
+        struct list_node *tmp = curr;
+        curr = curr->next;
+        free(tmp);
+        tmp = NULL;
+    }
+    self->first = NULL;
+}
+
 
 /**
  * we have multiple function for all the eval for the
@@ -462,7 +501,6 @@ void context_create(struct context *self) {
  * So, we display LineTo, MoveTo or color and calculate
  * the different values in the functions
  */
-
 
 
 /**

@@ -114,10 +114,13 @@ void ast_destroy(struct ast *self);
 void ast_node_destroy(struct ast_node *self);
 
 // handling of proc for the context
-struct proc_handling {
+struct proc_handling_node {
     char* name;
-    struct ast_node *self;
-    struct proc_handling *next;
+    struct ast_node *astNode;
+    struct proc_handling_node *next;
+};
+struct proc_handling {
+    struct proc_handling_node* first;
 };
 // the execution context
 struct context {
