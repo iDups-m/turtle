@@ -452,6 +452,8 @@ void context_create(struct context *self) {
     self->color.r = 0.0;
     self->color.g = 0.0;
     self->color.b = 0.0;
+
+    self->handler = calloc(1, sizeof(struct proc_handling));
 }
 
 /**

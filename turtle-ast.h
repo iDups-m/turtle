@@ -113,6 +113,12 @@ struct ast {
 void ast_destroy(struct ast *self);
 void ast_node_destroy(struct ast_node *self);
 
+// handling of proc for the context
+struct proc_handling {
+    char* name;
+    struct ast_node *self;
+    struct proc_handling *next;
+};
 // the execution context
 struct context {
     double x;
@@ -126,8 +132,7 @@ struct context {
         double b;
     } color;
 
-    // TODO: add procedure handling
-    // TODO: add variable handling
+    struct proc_handling* handler;
 };
 
 // create an initial context
