@@ -686,10 +686,22 @@ void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
-    // add handling in context
+    handler_proc_push(ctx, self->children[0], self->children[1]->u.name);
 }
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
+    char* name = self->children[0]->u.name;
 
+    struct proc_handling_node *curr = ctx->handler->first;
+
+    while(curr) {
+        if (strcmp(name, curr->name)) {
+            ast_node_eval(curr->astNode, ctx);
+            return;
+        }
+        curr = curr->next;
+    }
+
+    fprintf(stderr, "Error");
 }
 void eval_cmd_block(const struct ast_node *self, struct context *ctx) {
     ast_node_eval(self->children[0], ctx);
