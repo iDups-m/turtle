@@ -113,7 +113,7 @@ struct ast {
 void ast_destroy(struct ast *self);
 void ast_node_destroy(struct ast_node *self);
 
-// handling of proc for the context
+// handling of procedure for the context
 struct proc_handling_node {
     char* name;
     struct ast_node *astNode;
@@ -122,6 +122,16 @@ struct proc_handling_node {
 struct proc_handling {
     struct proc_handling_node* first;
 };
+// handling of variable for the context
+struct var_handling_node {
+    char* name;
+    double value;
+    struct var_handling_node *next;
+};
+struct var_handling {
+    struct var_handling_node* first;
+};
+
 // the execution context
 struct context {
     double x;
@@ -135,13 +145,15 @@ struct context {
         double b;
     } color;
 
-    struct proc_handling* handler;
+    struct proc_handling* handlerForProc;
+    struct var_handling* handlerForVar;
 };
 
 // create an initial context
 void context_create(struct context *self);
 void handler_proc_push(struct context *ctx, struct ast_node *astName, struct ast_node *astNode);
-void handler_proc_destroy(struct context *ctx);
+void ctx_handler_destroy(struct context *ctx);
+void var_proc_push(struct context *ctx, double value);
 
 // print the tree as if it was a Turtle program
 void ast_print(const struct ast *self);

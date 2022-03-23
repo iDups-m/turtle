@@ -450,14 +450,17 @@ void context_create(struct context *self) {
     self->color.g = 0.0;
     self->color.b = 0.0;
 
-    self->handler = calloc(1, sizeof(struct proc_handling));
-    self->handler->first = NULL;
+    self->handlerForProc = calloc(1, sizeof(struct proc_handling));
+    self->handlerForProc->first = NULL;
+
+    self->handlerForVar = calloc(1, sizeof(struct var_handling));
+    self->handlerForVar->first = NULL;
 }
 
 void handler_proc_push(struct context *ctx, struct ast_node *astName, struct ast_node *astNode){
     assert(astName);
     assert(astNode);
-    assert(ctx->handler);
+    assert(ctx->handlerForProc);
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
     if(node == NULL){
         printf("Error allocation\n");
@@ -466,18 +469,18 @@ void handler_proc_push(struct context *ctx, struct ast_node *astName, struct ast
     node->name = str_dup(astName->u.name);
     node->astNode = astNode;
 
-    if(ctx->handler->first == NULL){
-        ctx->handler->first = node;
+    if(ctx->handlerForProc->first == NULL){
+        ctx->handlerForProc->first = node;
         node->next = NULL;
         return ;
     }
-    node->next = ctx->handler->first;
-    ctx->handler->first = node;
+    node->next = ctx->handlerForProc->first;
+    ctx->handlerForProc->first = node;
 }
 
-void handler_proc_destroy(struct context *ctx) {
-    assert(ctx->handler);
-    struct proc_handling_node *curr = ctx->handler->first;
+void ctx_handler_destroy(struct context *ctx) {
+    assert(ctx->handlerForProc);
+    struct proc_handling_node *curr = ctx->handlerForProc->first;
 
     while(curr){
         struct proc_handling_node *tmp = curr;
@@ -486,8 +489,8 @@ void handler_proc_destroy(struct context *ctx) {
         free(tmp);
         tmp = NULL;
     }
-    ctx->handler->first = NULL;
-    free(ctx->handler);
+    ctx->handlerForProc->first = NULL;
+    free(ctx->handlerForProc);
 }
 
 
@@ -690,7 +693,7 @@ void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
     char* name = self->children[0]->u.name;
 
-    struct proc_handling_node *curr = ctx->handler->first;
+    struct proc_handling_node *curr = ctx->handlerForProc->first;
 
     while(curr) {
         if (strcmp(name, curr->name)==0) {
