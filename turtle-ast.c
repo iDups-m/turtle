@@ -80,9 +80,6 @@ struct ast_node *make_binary_operand(struct ast_node *expr1, char operand, struc
     node->children_count = 2;
     node->children[0] = expr1;
     node->children[1] = expr2;
-
-    //fprintf(stderr, "val=%f\n", expr1->u.value);
-    //fprintf(stderr, "val=%f\n\n", expr2->u.value);
     return node;
 }
 /**
@@ -457,16 +454,17 @@ void context_create(struct context *self) {
     self->handler->first = NULL;
 }
 
-void handler_proc_push(struct context *ctx, struct ast_node *self, char* name){
-    assert(self);
+void handler_proc_push(struct context *ctx, struct ast_node *astName, struct ast_node *astNode){
+    assert(astName);
+    assert(astNode);
     assert(ctx->handler);
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
     if(node == NULL){
         printf("Error allocation\n");
         return ;
     }
-    node->name = name;
-    node->astNode = self;
+    node->name = str_dup(astName->u.name);
+    node->astNode = astNode;
 
     if(ctx->handler->first == NULL){
         ctx->handler->first = node;
@@ -484,6 +482,7 @@ void handler_proc_destroy(struct context *ctx) {
     while(curr){
         struct proc_handling_node *tmp = curr;
         curr = curr->next;
+        free(tmp->name);
         free(tmp);
         tmp = NULL;
     }
@@ -686,7 +685,7 @@ void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
 
 }
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
-    handler_proc_push(ctx, self->children[0], self->children[1]->u.name);
+    handler_proc_push(ctx, self->children[0], self->children[1]);
 }
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
     char* name = self->children[0]->u.name;
@@ -694,14 +693,14 @@ void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
     struct proc_handling_node *curr = ctx->handler->first;
 
     while(curr) {
-        if (strcmp(name, curr->name)) {
+        if (strcmp(name, curr->name)==0) {
             ast_node_eval(curr->astNode, ctx);
             return;
         }
         curr = curr->next;
     }
 
-    fprintf(stderr, "Error");
+    fprintf(stderr, "Error, no proc with this name !\n");
 }
 void eval_cmd_block(const struct ast_node *self, struct context *ctx) {
     ast_node_eval(self->children[0], ctx);
