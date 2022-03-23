@@ -86,23 +86,23 @@ cmds:
  * Grammar rules for each commands.
  */
 cmd:
-     '{' cmds '}'			{ $$ = make_cmd_block($2); }
-  |  KW_UP	   			{ $$ = make_cmd_up(); }
-  |  KW_DOWN				{ $$ = make_cmd_down(); }
-  |  KW_FORWARD expr   			{ $$ = make_cmd_forward($2); }
-  |  KW_BACKWARD expr			{ $$ = make_cmd_backward($2); }
-  |  KW_POSITION expr ',' expr		{ $$ = make_cmd_position($2, $4); }
-  |  KW_RIGHT expr			{ $$ = make_cmd_right($2); }
-  |  KW_LEFT expr			{ $$ = make_cmd_left($2); }
-  |  KW_HEADING expr			{ $$ = make_cmd_heading($2); }
-  |  KW_PRINT expr			{ $$ = make_cmd_print($2); }
-  |  KW_COLOR expr ',' expr ','	expr	{ $$ = make_cmd_color($2, $4, $6); }						/* color with values of rgb 	*/
+     '{' cmds '}'			{ $$ = make_cmd_block($2); 			}
+  |  KW_UP	   			{ $$ = make_cmd_up(); 				}
+  |  KW_DOWN				{ $$ = make_cmd_down(); 			}
+  |  KW_FORWARD expr   			{ $$ = make_cmd_forward($2); 			}
+  |  KW_BACKWARD expr			{ $$ = make_cmd_backward($2);	 		}
+  |  KW_POSITION expr ',' expr		{ $$ = make_cmd_position($2, $4); 		}
+  |  KW_RIGHT expr			{ $$ = make_cmd_right($2); 			}
+  |  KW_LEFT expr			{ $$ = make_cmd_left($2); 			}
+  |  KW_HEADING expr			{ $$ = make_cmd_heading($2); 			}
+  |  KW_PRINT expr			{ $$ = make_cmd_print($2); 			}
+  |  KW_COLOR expr ',' expr ','	expr	{ $$ = make_cmd_color($2, $4, $6); 		}				/* color with values of rgb 	*/
   |  KW_COLOR COLOR			{ $$ = make_cmd_color_yy($<color>2.r, $<color>2.g, $<color>2.b); }		/* color with keyword 		*/
-  |  KW_HOME				{ $$ = make_cmd_home(); }
-  |  KW_REPEAT expr cmd			{ $$ = make_cmd_repeat($2, $3); }
-  |  KW_SET expr ',' expr		{ $$ = make_cmd_set($2, $4);}
-  |  KW_PROC expr cmd			{ $$ = make_cmd_proc($2, $3); }
-  |  KW_CALL expr			{ $$ = make_cmd_call($2); }
+  |  KW_HOME				{ $$ = make_cmd_home(); 			}
+  |  KW_REPEAT expr cmd			{ $$ = make_cmd_repeat($2, $3); 		}
+  |  KW_SET NAME expr			{ $$ = make_cmd_set($2, $3);			}
+  |  KW_PROC NAME cmd			{ $$ = make_cmd_proc($2, $3); 			}
+  |  KW_CALL expr			{ $$ = make_cmd_call($2); 			}
 ;
 
 
@@ -110,20 +110,20 @@ cmd:
  * An expression can be a value (double), a name (string) or operation between expressions
  */
 expr:
-    'q'                 		{ exit(0); }
-    | VALUE             		{ $$ = make_expr_value($1); }
-    | NAME                  		{ $$ = make_expr_name($1); }
-    | expr '+' expr       		{ $$ = make_binary_operand($1, '+', $3); }
-    | expr '-' expr       		{ $$ = make_binary_operand($1, '-', $3); }
-    | expr '*' expr       		{ $$ = make_binary_operand($1, '*', $3); }
-    | expr '/' expr       		{ $$ = make_binary_operand($1, '/', $3); }
-    | '-' expr %prec NEG   		{ $$ = make_unary_operand('-', $2); }
-    | MATH_RANDOM '(' expr ',' expr ')' { $$ = make_func_random($3, $5); }
-    | MATH_SIN '(' expr ')'		{ $$ = make_func_sin($3); }
-    | MATH_COS '(' expr ')'		{ $$ = make_func_cos($3); }
-    | MATH_TAN '(' expr ')'		{ $$ = make_func_tan($3); }
-    | MATH_SQRT '(' expr ')'		{ $$ = make_func_sqrt($3); }
-    | '(' expr ')'         		{ $$ = make_expr_block($2); }
+  'q'                 			{ exit(0); 					}
+  | VALUE             			{ $$ = make_expr_value($1); 			}
+  | NAME                  		{ $$ = make_expr_name($1); 			}
+  | expr '+' expr       		{ $$ = make_binary_operand($1, '+', $3); 	}
+  | expr '-' expr       		{ $$ = make_binary_operand($1, '-', $3); 	}
+  | expr '*' expr       		{ $$ = make_binary_operand($1, '*', $3); 	}
+  | expr '/' expr       		{ $$ = make_binary_operand($1, '/', $3); 	}
+  | '-' expr %prec NEG   		{ $$ = make_unary_operand('-', $2); 		}
+  | MATH_RANDOM '(' expr ',' expr ')'   { $$ = make_func_random($3, $5); 		}
+  | MATH_SIN '(' expr ')'		{ $$ = make_func_sin($3); 			}
+  | MATH_COS '(' expr ')'		{ $$ = make_func_cos($3); 			}
+  | MATH_TAN '(' expr ')'		{ $$ = make_func_tan($3); 			}
+  | MATH_SQRT '(' expr ')'		{ $$ = make_func_sqrt($3); 			}
+  | '(' expr ')'         		{ $$ = make_expr_block($2); 			}
 ;
 
 %%

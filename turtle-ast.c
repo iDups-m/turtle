@@ -8,6 +8,8 @@
 #include <math.h>
 
 #define PI 3.141592653589793
+#define SQRT2 1.41421356237309504880
+#define SQRT3 1.7320508075688772935
 
 /**
  * intern function to duplicate a string
@@ -274,11 +276,12 @@ struct ast_node *make_cmd_repeat(struct ast_node *expr1, struct ast_node *expr2)
  * @param expr2 the value to affect to the variable
  * @return the node created
  */
-struct ast_node *make_cmd_set(struct ast_node *expr1, struct ast_node *expr2) {
+struct ast_node *make_cmd_set(char *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_SET;
-    node->u.name = expr1->u.name;
-    node->u.value = expr1->u.value;
+    node->u.name = expr1;
+    node->children_count = 1;
+    node->children[0] = expr2;
     return node;
 }
 /**
@@ -287,13 +290,12 @@ struct ast_node *make_cmd_set(struct ast_node *expr1, struct ast_node *expr2) {
  * @param expr2 the command
  * @return the node created
  */
-struct ast_node *make_cmd_proc(struct ast_node *expr1, struct ast_node *expr2) {
+struct ast_node *make_cmd_proc(char *expr1, struct ast_node *expr2) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_CMD_PROC;
-    node->u.name = expr1->u.name;
-    node->children_count = 2;
-    node->children[0] = expr1;
-    node->children[1] = expr2;
+    node->u.name = expr1;
+    node->children_count = 1;
+    node->children[0] = expr2;
     return node;
 }
 /**
@@ -455,10 +457,12 @@ void context_create(struct context *self) {
 
     self->handlerForVar = calloc(1, sizeof(struct var_handling));
     self->handlerForVar->first = NULL;
+    handler_var_push(self, "PI", PI);
+    handler_var_push(self, "SQRT2", SQRT2);
+    handler_var_push(self, "SQRT3", SQRT3);
 }
 
-void handler_proc_push(struct context *ctx, struct ast_node *astName, struct ast_node *astNode){
-    assert(astName);
+void handler_proc_push(struct context *ctx, char *name, struct ast_node *astNode){
     assert(astNode);
     assert(ctx->handlerForProc);
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
@@ -466,7 +470,7 @@ void handler_proc_push(struct context *ctx, struct ast_node *astName, struct ast
         printf("Error allocation\n");
         return ;
     }
-    node->name = str_dup(astName->u.name);
+    node->name = str_dup(name);
     node->astNode = astNode;
 
     if(ctx->handlerForProc->first == NULL){
@@ -478,19 +482,49 @@ void handler_proc_push(struct context *ctx, struct ast_node *astName, struct ast
     ctx->handlerForProc->first = node;
 }
 
+void handler_var_push(struct context *ctx, char *name, double value){
+    assert(ctx->handlerForVar);
+    struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
+    if(node == NULL){
+        printf("Error allocation\n");
+        return ;
+    }
+    node->name = str_dup(name);
+    node->value = value;
+
+    if(ctx->handlerForVar->first == NULL){
+        ctx->handlerForVar->first = node;
+        node->next = NULL;
+        return ;
+    }
+    node->next = ctx->handlerForVar->first;
+    ctx->handlerForVar->first = node;
+}
+
 void ctx_handler_destroy(struct context *ctx) {
     assert(ctx->handlerForProc);
-    struct proc_handling_node *curr = ctx->handlerForProc->first;
+    struct proc_handling_node *currProc = ctx->handlerForProc->first;
+    struct var_handling_node *currVar = ctx->handlerForVar->first;
 
-    while(curr){
-        struct proc_handling_node *tmp = curr;
-        curr = curr->next;
+    while(currProc){
+        struct proc_handling_node *tmp = currProc;
+        currProc = currProc->next;
         free(tmp->name);
         free(tmp);
         tmp = NULL;
     }
     ctx->handlerForProc->first = NULL;
     free(ctx->handlerForProc);
+
+    while(currVar){
+        struct var_handling_node *tmp = currVar;
+        currVar = currVar->next;
+        free(tmp->name);
+        free(tmp);
+        tmp = NULL;
+    }
+    ctx->handlerForVar->first = NULL;
+    free(ctx->handlerForVar);
 }
 
 
@@ -597,8 +631,7 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
             //TODO
             break;
         case KIND_EXPR_NAME:
-            // nothing to do
-            //fprintf(stdout, "%s ", self->u.name);
+            return eval_set_value(self, ctx);
             break;
     }
 
@@ -685,10 +718,12 @@ void eval_cmd_repeat(const struct ast_node *self, struct context *ctx) {
     }
 }
 void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
-
+    double value = ast_node_eval(self->children[0], ctx);
+    printf("value=%f\n", value);
+    handler_var_push(ctx, self->u.name, value);
 }
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
-    handler_proc_push(ctx, self->children[0], self->children[1]);
+    handler_proc_push(ctx, self->u.name, self->children[0]);
 }
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
     char* name = self->children[0]->u.name;
@@ -703,7 +738,7 @@ void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
         curr = curr->next;
     }
 
-    fprintf(stderr, "Error, no proc with this name !\n");
+    fprintf(stderr, "Error, no procedure with this name !\n");
 }
 void eval_cmd_block(const struct ast_node *self, struct context *ctx) {
     ast_node_eval(self->children[0], ctx);
@@ -763,6 +798,21 @@ double eval_unary_operand(const struct ast_node *self, struct context *ctx) {
             break;
     }
     return value;
+}
+double eval_set_value(const struct ast_node *self, struct context *ctx){
+    char* name = self->u.name;
+
+    struct var_handling_node *curr = ctx->handlerForVar->first;
+
+    while(curr) {
+        if (strcmp(name, curr->name)==0) {
+            return curr->value;
+        }
+        curr = curr->next;
+    }
+
+    fprintf(stderr, "Error, no variables with this name !\n");
+    return -1;
 }
 
 /**
@@ -1000,25 +1050,18 @@ void print_cmd_repeat(const struct ast_node *self) {
     fprintf(stderr, "\n");
 }
 void print_cmd_set(const struct ast_node *self) {
-    fprintf(stderr, "set ");
+    fprintf(stderr, "set %s ", self->u.name);
 
-    for (int i = 0; i < self->children_count; ++i) {
-        ast_node_print(self->children[i]);
-        if (i != self->children_count-1) {
-            fprintf(stderr, ", ");
-        }
-    }
+    ast_node_print(self->children[0]);
 
     fprintf(stderr, "\n");
 }
 void print_cmd_proc(const struct ast_node *self) {
-    fprintf(stderr, "proc ");
-
-    ast_node_print(self->children[0]);
+    fprintf(stderr, "proc %s", self->u.name);
 
     fprintf(stderr, " {\n");
 
-    ast_node_print(self->children[1]);
+    ast_node_print(self->children[0]);
 
     fprintf(stderr, "}");
 

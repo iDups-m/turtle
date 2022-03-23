@@ -92,8 +92,8 @@ struct ast_node *make_cmd_color(struct ast_node *expr1, struct ast_node *expr2, 
 struct ast_node *make_cmd_color_yy();
 struct ast_node *make_cmd_home();
 struct ast_node *make_cmd_repeat(struct ast_node *expr1, struct ast_node *expr2);
-struct ast_node *make_cmd_set(struct ast_node *expr1, struct ast_node *expr2);
-struct ast_node *make_cmd_proc(struct ast_node *expr1, struct ast_node *expr2);
+struct ast_node *make_cmd_set(char *expr1, struct ast_node *expr2);
+struct ast_node *make_cmd_proc(char *expr1, struct ast_node *expr2);
 struct ast_node *make_cmd_call(struct ast_node *expr);
 struct ast_node *make_cmd_block(struct ast_node *expr);
 struct ast_node *make_func_sin(struct ast_node *expr);
@@ -151,9 +151,9 @@ struct context {
 
 // create an initial context
 void context_create(struct context *self);
-void handler_proc_push(struct context *ctx, struct ast_node *astName, struct ast_node *astNode);
+void handler_proc_push(struct context *ctx, char *name, struct ast_node *astNode);
+void handler_var_push(struct context *ctx, char *name, double value);
 void ctx_handler_destroy(struct context *ctx);
-void var_proc_push(struct context *ctx, double value);
 
 // print the tree as if it was a Turtle program
 void ast_print(const struct ast *self);
@@ -210,6 +210,7 @@ double eval_func_random(const struct ast_node *self, struct context *ctx);
 double eval_func_sqrt(const struct ast_node *self, struct context *ctx);
 double eval_binary_operand(const struct ast_node *self, struct context *ctx);
 double eval_unary_operand(const struct ast_node *self, struct context *ctx);
+double eval_set_value(const struct ast_node *self, struct context *ctx);
 
 //useful function
 double degre_to_radian(double angle);
