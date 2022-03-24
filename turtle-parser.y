@@ -54,7 +54,7 @@ void yyerror(struct ast *ret, const char *);
 %token 		  KW_PROC     "proc"
 %token		  KW_CALL     "call"
 
-//internal functions
+//internal functions keywords
 %token 		  MATH_SIN      "sin"
 %token		  MATH_COS      "cos"
 %token 		  MATH_TAN      "tan"

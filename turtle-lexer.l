@@ -85,7 +85,7 @@ true                                                                        { pr
  * Indicates rgb (red/blue/green) values of the keywords.
  * Values are stored in the structure color of yylval.
  *
- * Part 3 (line 52-62 ) :
+ * Part 3 (line 52-62) :
  * Recognise grammar symbols.
  *
  * Part 4 (line 64-71) :

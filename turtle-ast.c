@@ -457,18 +457,39 @@ void context_create(struct context *self) {
 
     self->handlerForVar = calloc(1, sizeof(struct var_handling));
     self->handlerForVar->first = NULL;
+
+    //create the different default variable
     handler_var_push(self, "PI", PI);
     handler_var_push(self, "SQRT2", SQRT2);
     handler_var_push(self, "SQRT3", SQRT3);
 }
 
-void handler_proc_push(struct context *ctx, char *name, struct ast_node *astNode){
+/**
+ * function to add a procedure to the linked list of procedures
+ * in the context
+ * @param ctx the current context
+ * @param name the name of the procedure
+ * @param astNode the node of the procedure with the different commands
+ */
+void handler_proc_push(struct context *ctx, char *name, struct ast_node *astNode) {
     assert(astNode);
     assert(ctx->handlerForProc);
+
+    //handle the situation where the variable name is already used
+    struct proc_handling_node *currProc = ctx->handlerForProc->first;
+    while(currProc) {
+        struct proc_handling_node *tmp = currProc;
+        currProc = currProc->next;
+        if(strcmp(tmp->name,name)==0) {
+            fprintf(stderr, "Error : procedure %s is already created\n", name);
+            return;
+        }
+    }
+
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
     if(node == NULL){
-        printf("Error allocation\n");
-        return ;
+        fprintf(stderr, "Error : allocation\n");
+        return;
     }
     node->name = str_dup(name);
     node->astNode = astNode;
@@ -476,18 +497,36 @@ void handler_proc_push(struct context *ctx, char *name, struct ast_node *astNode
     if(ctx->handlerForProc->first == NULL){
         ctx->handlerForProc->first = node;
         node->next = NULL;
-        return ;
+        return;
     }
     node->next = ctx->handlerForProc->first;
     ctx->handlerForProc->first = node;
 }
 
-void handler_var_push(struct context *ctx, char *name, double value){
+/**
+ * function to add a variable to the linked list of variables
+ * @param ctx the current context
+ * @param name the name of the variable
+ * @param value the value of the variable
+ */
+void handler_var_push(struct context *ctx, char *name, double value) {
     assert(ctx->handlerForVar);
+
+    //handle the situation where the procedure name is already used
+    struct var_handling_node *currVar = ctx->handlerForVar->first;
+    while(currVar) {
+        struct var_handling_node *tmp = currVar;
+        currVar = currVar->next;
+        if(strcmp(tmp->name,name)==0) {
+            fprintf(stderr, "Error : variable %s is already created\n", name);
+            return;
+        }
+    }
+
     struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
     if(node == NULL){
-        printf("Error allocation\n");
-        return ;
+        fprintf(stderr, "Error : allocation\n");
+        return;
     }
     node->name = str_dup(name);
     node->value = value;
@@ -495,18 +534,22 @@ void handler_var_push(struct context *ctx, char *name, double value){
     if(ctx->handlerForVar->first == NULL){
         ctx->handlerForVar->first = node;
         node->next = NULL;
-        return ;
+        return;
     }
     node->next = ctx->handlerForVar->first;
     ctx->handlerForVar->first = node;
 }
 
+/**
+ * function to destroy both linked list of the context
+ * @param ctx the current context
+ */
 void ctx_handler_destroy(struct context *ctx) {
     assert(ctx->handlerForProc);
     struct proc_handling_node *currProc = ctx->handlerForProc->first;
     struct var_handling_node *currVar = ctx->handlerForVar->first;
 
-    while(currProc){
+    while(currProc) {
         struct proc_handling_node *tmp = currProc;
         currProc = currProc->next;
         free(tmp->name);
@@ -516,7 +559,7 @@ void ctx_handler_destroy(struct context *ctx) {
     ctx->handlerForProc->first = NULL;
     free(ctx->handlerForProc);
 
-    while(currVar){
+    while(currVar) {
         struct var_handling_node *tmp = currVar;
         currVar = currVar->next;
         free(tmp->name);
@@ -537,9 +580,9 @@ void ctx_handler_destroy(struct context *ctx) {
 
 
 /**
- * eval a turtle tree
- * @param self the three to eval
- * @param ctx the context
+ * evaluate a turtle tree
+ * @param self the tree to evaluate
+ * @param ctx the context to evaluate
  */
 void ast_eval(const struct ast *self, struct context *ctx) {
     if (!self) {
@@ -549,6 +592,13 @@ void ast_eval(const struct ast *self, struct context *ctx) {
     ast_node_eval(self->unit, ctx);
 }
 
+/**
+ * evaluate a node of the turtle tree
+ * @param self the node to evaluate
+ * @param ctx the context to evaluate
+ * @return the value if it's a value expression, otherwise return 0.0
+ * as the default value
+ */
 double ast_node_eval(const struct ast_node *self, struct context *ctx) {
     if (!self) {
         return -1;
@@ -638,6 +688,7 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
     if(self->next) {
         return ast_node_eval(self->next, ctx);
     }
+
     return 0.0;
 }
 
@@ -713,7 +764,7 @@ void eval_cmd_home(const struct ast_node *self, struct context *ctx) {
 }
 void eval_cmd_repeat(const struct ast_node *self, struct context *ctx) {
     double iter = floor(ast_node_eval(self->children[0], ctx));
-    for(int i=0; i<iter; ++i){
+    for(int i = 0; i < iter; ++i) {
         ast_node_eval(self->children[1], ctx);
     }
 }
@@ -738,7 +789,7 @@ void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
         curr = curr->next;
     }
 
-    fprintf(stderr, "Error, no procedure with this name !\n");
+    fprintf(stderr, "Error : no procedure with this name !\n");
 }
 void eval_cmd_block(const struct ast_node *self, struct context *ctx) {
     ast_node_eval(self->children[0], ctx);
@@ -800,12 +851,10 @@ double eval_unary_operand(const struct ast_node *self, struct context *ctx) {
     return value;
 }
 double eval_set_value(const struct ast_node *self, struct context *ctx){
-    char* name = self->u.name;
-
     struct var_handling_node *curr = ctx->handlerForVar->first;
 
     while(curr) {
-        if (strcmp(name, curr->name)==0) {
+        if (strcmp(self->u.name, curr->name)==0) {
             return curr->value;
         }
         curr = curr->next;

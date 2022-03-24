@@ -139,13 +139,17 @@ struct context {
     double angle;
     bool up;
 
+    // structure to store the current color to display
     struct {
         double r;
         double g;
         double b;
     } color;
 
+    // linked list to handle the procedures
     struct proc_handling* handlerForProc;
+
+    // linked list to handle the variables
     struct var_handling* handlerForVar;
 };
 
