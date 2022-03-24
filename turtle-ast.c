@@ -459,9 +459,15 @@ void context_create(struct context *self) {
     self->handlerForVar->first = NULL;
 
     //create the different default variable
-    handler_var_push(self, "PI", PI);
-    handler_var_push(self, "SQRT2", SQRT2);
-    handler_var_push(self, "SQRT3", SQRT3);
+    struct ast_node *node_PI = calloc(1, sizeof(struct ast_node));
+    node_PI->u.name = "PI";
+    struct ast_node *node_SQRT2 = calloc(1, sizeof(struct ast_node));
+    node_SQRT2->u.name = "SQRT2";
+    struct ast_node *node_SQRT3 = calloc(1, sizeof(struct ast_node));
+    node_SQRT3->u.name = "SQRT3";
+    handler_var_push(self, node_PI, PI);
+    handler_var_push(self, node_SQRT2, SQRT2);
+    handler_var_push(self, node_SQRT3, SQRT3);
 }
 
 /**
@@ -471,7 +477,7 @@ void context_create(struct context *self) {
  * @param name the name of the procedure
  * @param astNode the node of the procedure with the different commands
  */
-void handler_proc_push(struct context *ctx, char *name, struct ast_node *astNode) {
+void handler_proc_push(struct context *ctx, const struct ast_node *self/*char *name*/, struct ast_node *astNode) {
     assert(astNode);
     assert(ctx->handlerForProc);
 
@@ -480,21 +486,21 @@ void handler_proc_push(struct context *ctx, char *name, struct ast_node *astNode
     while(currProc) {
         struct proc_handling_node *tmp = currProc;
         currProc = currProc->next;
-        if(strcmp(tmp->name,name)==0) {
-            fprintf(stderr, "Error : procedure %s is already created\n", name);
+        if(strcmp(tmp->name,self->u.name)==0) {
+            fprintf(stderr, "Error : procedure %s is already created\n", self->u.name);
             return;
         }
     }
 
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
-    if(node == NULL){
+    if(node == NULL) {
         fprintf(stderr, "Error : allocation\n");
         return;
     }
-    node->name = str_dup(name);
+    node->name = self->u.name;
     node->astNode = astNode;
 
-    if(ctx->handlerForProc->first == NULL){
+    if(ctx->handlerForProc->first == NULL) {
         ctx->handlerForProc->first = node;
         node->next = NULL;
         return;
@@ -509,7 +515,7 @@ void handler_proc_push(struct context *ctx, char *name, struct ast_node *astNode
  * @param name the name of the variable
  * @param value the value of the variable
  */
-void handler_var_push(struct context *ctx, char *name, double value) {
+void handler_var_push(struct context *ctx, const struct ast_node *self/*char *name*/, double value) {
     assert(ctx->handlerForVar);
 
     //handle the situation where the procedure name is already used
@@ -517,21 +523,21 @@ void handler_var_push(struct context *ctx, char *name, double value) {
     while(currVar) {
         struct var_handling_node *tmp = currVar;
         currVar = currVar->next;
-        if(strcmp(tmp->name,name)==0) {
-            fprintf(stderr, "Error : variable %s is already created\n", name);
+        if(strcmp(tmp->name,self->u.name)==0) {
+            fprintf(stderr, "Error : variable %s is already created\n", self->u.name);
             return;
         }
     }
 
     struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
-    if(node == NULL){
+    if(node == NULL) {
         fprintf(stderr, "Error : allocation\n");
         return;
     }
-    node->name = str_dup(name);
+    node->name = self->u.name;
     node->value = value;
 
-    if(ctx->handlerForVar->first == NULL){
+    if(ctx->handlerForVar->first == NULL) {
         ctx->handlerForVar->first = node;
         node->next = NULL;
         return;
@@ -771,10 +777,10 @@ void eval_cmd_repeat(const struct ast_node *self, struct context *ctx) {
 void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
     double value = ast_node_eval(self->children[0], ctx);
     printf("value=%f\n", value);
-    handler_var_push(ctx, self->u.name, value);
+    handler_var_push(ctx, self, value);
 }
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
-    handler_proc_push(ctx, self->u.name, self->children[0]);
+    handler_proc_push(ctx, self, self->children[0]);
 }
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
     char* name = self->children[0]->u.name;
