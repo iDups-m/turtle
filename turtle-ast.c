@@ -459,15 +459,27 @@ void context_create(struct context *self) {
     self->handlerForVar->first = NULL;
 
     //create the different default variable
-    struct ast_node *node_PI = calloc(1, sizeof(struct ast_node));
-    node_PI->u.name = "PI";
-    struct ast_node *node_SQRT2 = calloc(1, sizeof(struct ast_node));
-    node_SQRT2->u.name = "SQRT2";
-    struct ast_node *node_SQRT3 = calloc(1, sizeof(struct ast_node));
-    node_SQRT3->u.name = "SQRT3";
-    handler_var_push(self, node_PI, PI);
-    handler_var_push(self, node_SQRT2, SQRT2);
-    handler_var_push(self, node_SQRT3, SQRT3);
+    add_default_var("PI", PI, self);
+    add_default_var("SQRT2", SQRT2, self);
+    add_default_var("SQRT3", SQRT3, self);
+}
+
+void add_default_var(char *name, double value, struct context *ctx) {
+    struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
+    if(node == NULL) {
+        fprintf(stderr, "Error : allocation\n");
+        return;
+    }
+    node->name = str_dup(name);
+    node->value = value;
+
+    if(ctx->handlerForVar->first == NULL) {
+        ctx->handlerForVar->first = node;
+        node->next = NULL;
+        return;
+    }
+    node->next = ctx->handlerForVar->first;
+    ctx->handlerForVar->first = node;
 }
 
 /**
@@ -477,7 +489,7 @@ void context_create(struct context *self) {
  * @param name the name of the procedure
  * @param astNode the node of the procedure with the different commands
  */
-void handler_proc_push(struct context *ctx, const struct ast_node *self/*char *name*/, struct ast_node *astNode) {
+void handler_proc_push(struct context *ctx, const struct ast_node *self, struct ast_node *astNode) {
     assert(astNode);
     assert(ctx->handlerForProc);
 
@@ -515,7 +527,7 @@ void handler_proc_push(struct context *ctx, const struct ast_node *self/*char *n
  * @param name the name of the variable
  * @param value the value of the variable
  */
-void handler_var_push(struct context *ctx, const struct ast_node *self/*char *name*/, double value) {
+void handler_var_push(struct context *ctx, const struct ast_node *self, double value) {
     assert(ctx->handlerForVar);
 
     //handle the situation where the procedure name is already used
