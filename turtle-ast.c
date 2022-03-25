@@ -553,17 +553,6 @@ void handler_var_push(struct context *ctx, const struct ast_node *self, double v
     assert(ctx->handlerForVar);
     assert(self);
 
-    //handle the situation where the procedure name is already used
-    struct var_handling_node *currVar = ctx->handlerForVar->first;
-    while(currVar) {
-        struct var_handling_node *tmp = currVar;
-        currVar = currVar->next;
-        if (strcmp(tmp->name, self->u.name) == 0) {
-            fprintf(stderr, "Error : variable %s is already created\n", self->u.name);
-            return;
-        }
-    }
-
     struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
     if(node == NULL) {
         fprintf(stderr, "Error : allocation\n");
