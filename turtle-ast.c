@@ -511,6 +511,7 @@ void add_default_var(char *name, double value, struct context *ctx) {
  * @param astNode the node of the procedure with the different commands
  */
 void handler_proc_push(struct context *ctx, const struct ast_node *self, struct ast_node *astNode) {
+    assert(self);
     assert(astNode);
     assert(ctx->handlerForProc);
 
@@ -550,6 +551,7 @@ void handler_proc_push(struct context *ctx, const struct ast_node *self, struct 
  */
 void handler_var_push(struct context *ctx, const struct ast_node *self, double value) {
     assert(ctx->handlerForVar);
+    assert(self);
 
     //handle the situation where the procedure name is already used
     struct var_handling_node *currVar = ctx->handlerForVar->first;
@@ -717,7 +719,7 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
         case KIND_EXPR_BINOP:
             return eval_binary_operand(self, ctx);
         case KIND_EXPR_BLOCK:
-            eval_expr_block(self, ctx);
+            return eval_expr_block(self, ctx);
             break;
         case KIND_EXPR_NAME:
             return eval_set_value(self, ctx);
@@ -908,10 +910,9 @@ double eval_set_value(const struct ast_node *self, struct context *ctx) {
     return -1;
 }
 double eval_expr_block(const struct ast_node *self, struct context *ctx) {
-    /*double value = eval_binary_operand(self->children[0], ctx);
-    fprintf(stderr, "%f\n", value);
-    return value;*/
-    return ast_node_eval(self->children[0], ctx);
+    double value = ast_node_eval(self->children[0], ctx);
+    fprintf(stderr, "value= %f\n", value);
+    return value;
 }
 
 /**
