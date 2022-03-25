@@ -54,12 +54,12 @@ INT             0|[1-9][0-9]*
 "-"           { return '-'; }
 "*"           { return '*'; }
 "/"           { return '/'; }
+"^"           { return '^'; }
 "("           { return '('; }
 ")"           { return ')'; }
 "{"           { return '{'; }
 "}"           { return '}'; }
 "#"           { return '#'; }
-QUIT          { return 'q'; }
 
 true                                                                        { printf("true found\n"); }
 0|[1-9]{DIGIT}*                                                             { yylval.value = strtod(yytext, NULL); return VALUE; }

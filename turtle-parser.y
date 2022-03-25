@@ -66,6 +66,7 @@ void yyerror(struct ast *ret, const char *);
 /**
  * Priority rules :
  * Indicates associativity and priority for arithmetic operations.
+ * Order is important.
  */
 %left '+' '-'
 %left '*' '/'
@@ -110,13 +111,13 @@ cmd:
  * An expression can be a value (double), a name (string) or operation between expressions
  */
 expr:
-  'q'                 			{ exit(0); 					}
-  | VALUE             			{ $$ = make_expr_value($1); 			}
+    VALUE             			{ $$ = make_expr_value($1); 			}
   | NAME                  		{ $$ = make_expr_name($1); 			}
   | expr '+' expr       		{ $$ = make_binary_operand($1, '+', $3); 	}
   | expr '-' expr       		{ $$ = make_binary_operand($1, '-', $3); 	}
   | expr '*' expr       		{ $$ = make_binary_operand($1, '*', $3); 	}
   | expr '/' expr       		{ $$ = make_binary_operand($1, '/', $3); 	}
+  | expr '^' expr       		{ $$ = make_binary_operand($1, '^', $3); 	}
   | '-' expr %prec NEG   		{ $$ = make_unary_operand('-', $2); 		}
   | MATH_RANDOM '(' expr ',' expr ')'   { $$ = make_func_random($3, $5); 		}
   | MATH_SIN '(' expr ')'		{ $$ = make_func_sin($3); 			}

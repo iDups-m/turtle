@@ -816,7 +816,6 @@ void eval_cmd_repeat(const struct ast_node *self, struct context *ctx) {
 }
 void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
     double value = ast_node_eval(self->children[0], ctx);
-    printf("value=%f\n", value);
     handler_var_push(ctx, self, value);
 }
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
@@ -881,6 +880,9 @@ double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
         case '/':
             value = ast_node_eval(self->children[0],ctx) / ast_node_eval(self->children[1],ctx);
             break;
+        case '^':
+            value = pow(ast_node_eval(self->children[0],ctx), ast_node_eval(self->children[1],ctx));
+            break;
     }
     return value;
 }
@@ -910,9 +912,7 @@ double eval_set_value(const struct ast_node *self, struct context *ctx) {
     return -1;
 }
 double eval_expr_block(const struct ast_node *self, struct context *ctx) {
-    double value = ast_node_eval(self->children[0], ctx);
-    fprintf(stderr, "value= %f\n", value);
-    return value;
+    return ast_node_eval(self->children[0], ctx);
 }
 
 /**
