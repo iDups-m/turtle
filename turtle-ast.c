@@ -11,6 +11,8 @@
 #define SQRT2 1.41421356237309504880
 #define SQRT3 1.7320508075688772935
 
+/* Useful functions */
+
 /**
  * intern function to duplicate a string
  * @param src the string to duplicate
@@ -34,6 +36,15 @@ char *str_dup(char *src) {
 
     *p = '\0';
     return str;
+}
+
+/**
+ * function to convert degree to radian angle
+ * @param angle the angle to convert
+ * @return the value of the angle in radian
+ */
+double degree_to_radian(double angle) {
+    return angle * (PI/180);
 }
 
 
@@ -395,13 +406,17 @@ struct ast_node *make_func_sqrt(struct ast_node *expr) {
  * @param expr the block
  * @return the node result created
  */
-struct ast_node *make_expr_block(struct ast_node *expr){
+struct ast_node *make_expr_block(struct ast_node *expr) {
     struct ast_node *node = calloc(1, sizeof(struct ast_node));
     node->kind = KIND_EXPR_BLOCK;
     node->children_count = 1;
     node->children[0] = expr;
     return node;
 }
+
+/**
+ * recursive function to destroy the tree and all these nodes
+ */
 
 /**
  * free the allocated space for the tree and all his nodes
@@ -414,7 +429,6 @@ void ast_destroy(struct ast *self) {
 
     ast_node_destroy(self->unit);
 }
-
 
 /**
  * recursive function to free the current node
@@ -464,6 +478,13 @@ void context_create(struct context *self) {
     add_default_var("SQRT3", SQRT3, self);
 }
 
+/**
+ * function to handle the creation of the different default variable
+ * of the turtle program : PI, SQRT2 and SQRT3
+ * @param name is the name of the variable
+ * @param value is the value to affect to the variable
+ * @param ctx is the current context to modify
+ */
 void add_default_var(char *name, double value, struct context *ctx) {
     struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
     if(node == NULL) {
@@ -498,7 +519,7 @@ void handler_proc_push(struct context *ctx, const struct ast_node *self, struct 
     while(currProc) {
         struct proc_handling_node *tmp = currProc;
         currProc = currProc->next;
-        if(strcmp(tmp->name,self->u.name)==0) {
+        if (strcmp(tmp->name, self->u.name) == 0) {
             fprintf(stderr, "Error : procedure %s is already created\n", self->u.name);
             return;
         }
@@ -535,7 +556,7 @@ void handler_var_push(struct context *ctx, const struct ast_node *self, double v
     while(currVar) {
         struct var_handling_node *tmp = currVar;
         currVar = currVar->next;
-        if(strcmp(tmp->name,self->u.name)==0) {
+        if (strcmp(tmp->name, self->u.name) == 0) {
             fprintf(stderr, "Error : variable %s is already created\n", self->u.name);
             return;
         }
@@ -696,22 +717,27 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
         case KIND_EXPR_BINOP:
             return eval_binary_operand(self, ctx);
         case KIND_EXPR_BLOCK:
-            //TODO
+            eval_expr_block(self, ctx);
             break;
         case KIND_EXPR_NAME:
             return eval_set_value(self, ctx);
             break;
     }
 
-    if(self->next) {
+    if (self->next) {
         return ast_node_eval(self->next, ctx);
     }
 
     return 0.0;
 }
 
+/**
+ * all the different eval function for the turtle program
+ * display for the turtle program only : LineTo, MoveTo and color
+ */
+
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
-    double angle_radian = degre_to_radian(ctx->angle);
+    double angle_radian = degree_to_radian(ctx->angle);
     double value = ast_node_eval(self->children[0], ctx);
     ctx->x -= sin(angle_radian) * value;
     ctx->y -= cos(angle_radian) * value;
@@ -725,7 +751,7 @@ void eval_cmd_forward(const struct ast_node *self, struct context *ctx) {
     fprintf(stdout, "\n");
 }
 void eval_cmd_backward(const struct ast_node *self, struct context *ctx) {
-    double angle_radian = degre_to_radian(ctx->angle);
+    double angle_radian = degree_to_radian(ctx->angle);
     double value = ast_node_eval(self->children[0], ctx);
     ctx->x += sin(angle_radian) * value;
     ctx->y += cos(angle_radian) * value;
@@ -868,7 +894,7 @@ double eval_unary_operand(const struct ast_node *self, struct context *ctx) {
     }
     return value;
 }
-double eval_set_value(const struct ast_node *self, struct context *ctx){
+double eval_set_value(const struct ast_node *self, struct context *ctx) {
     struct var_handling_node *curr = ctx->handlerForVar->first;
 
     while(curr) {
@@ -878,8 +904,14 @@ double eval_set_value(const struct ast_node *self, struct context *ctx){
         curr = curr->next;
     }
 
-    fprintf(stderr, "Error, no variables with this name !\n");
+    fprintf(stderr, "Error : no variables with this name !\n");
     return -1;
+}
+double eval_expr_block(const struct ast_node *self, struct context *ctx) {
+    /*double value = eval_binary_operand(self->children[0], ctx);
+    fprintf(stderr, "%f\n", value);
+    return value;*/
+    return ast_node_eval(self->children[0], ctx);
 }
 
 /**
@@ -987,7 +1019,7 @@ void ast_node_print(const struct ast_node *self) {
             print_binary_operand(self);
             break;
         case KIND_EXPR_BLOCK:
-            //TODO
+            print_expr_block(self);
             break;
         case KIND_EXPR_NAME:
             fprintf(stderr, "%s", self->u.name);
@@ -1001,7 +1033,7 @@ void ast_node_print(const struct ast_node *self) {
 /**
  * we have multiple function for all the print for the
  * different commands, functions, values and names
- * So, we display the node and all of his children
+ * So, we display the node and all of these children
  */
 
 
@@ -1198,23 +1230,22 @@ void print_func_sqrt(const struct ast_node *self) {
 
     fprintf(stderr, "\n");
 }
-
 void print_binary_operand(const struct ast_node *self) {
-    fprintf(stderr, "print_binary_operand\n");
     ast_node_print(self->children[0]);
 
     fprintf(stderr, " %c ", self->u.op);
 
     ast_node_print(self->children[1]);
 }
-
 void print_unary_operand(const struct ast_node *self) {
     fprintf(stderr, "%c", self->u.op);
 
     ast_node_print(self->children[0]);
 }
+void print_expr_block(const struct ast_node *self) {
+    fprintf(stderr, "(");
 
+    ast_node_print(self->children[0]);
 
-double degre_to_radian(double angle){
-    return angle * (PI/180);
+    fprintf(stderr, ")");
 }

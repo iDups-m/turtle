@@ -189,6 +189,7 @@ void print_func_random(const struct ast_node *self);
 void print_func_sqrt(const struct ast_node *self);
 void print_binary_operand(const struct ast_node *self);
 void print_unary_operand(const struct ast_node *self);
+void print_expr_block(const struct ast_node *self);
 
 // evaluate the tree and generate some basic primitives
 void ast_eval(const struct ast *self, struct context *ctx);
@@ -217,8 +218,9 @@ double eval_func_sqrt(const struct ast_node *self, struct context *ctx);
 double eval_binary_operand(const struct ast_node *self, struct context *ctx);
 double eval_unary_operand(const struct ast_node *self, struct context *ctx);
 double eval_set_value(const struct ast_node *self, struct context *ctx);
+double eval_expr_block(const struct ast_node *self, struct context *ctx);
 
 //useful function
-double degre_to_radian(double angle);
+double degree_to_radian(double angle);
 
 #endif /* TURTLE_AST_H */
