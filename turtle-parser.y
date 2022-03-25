@@ -68,6 +68,7 @@ void yyerror(struct ast *ret, const char *);
  * Indicates associativity and priority for arithmetic operations.
  * Order is important.
  */
+%left '^'
 %left '+' '-'
 %left '*' '/'
 %precedence NEG

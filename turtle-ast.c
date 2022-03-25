@@ -795,7 +795,13 @@ void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
     fprintf(stdout, "Color %f %f %f\n", ctx->color.r, ctx->color.g, ctx->color.b);
 }
 void eval_cmd_home(const struct ast_node *self, struct context *ctx) {
-    context_create(ctx);
+    ctx->x = 0.0;
+    ctx->y = 0.0;
+    ctx->angle = 0.0;
+    ctx->up = false;
+    ctx->color.r = 0.0;
+    ctx->color.g = 0.0;
+    ctx->color.b = 0.0;
 }
 void eval_cmd_repeat(const struct ast_node *self, struct context *ctx) {
     double iter = floor(ast_node_eval(self->children[0], ctx));
