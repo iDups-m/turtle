@@ -546,6 +546,17 @@ void handler_var_push(struct context *ctx, const struct ast_node *self, double v
     assert(ctx->handlerForVar);
     assert(self);
 
+    struct var_handling_node *currVar = ctx->handlerForVar->first;
+    while(currVar) {
+        if (strcmp(currVar->name, self->u.name) == 0) {
+            currVar->value = value;
+            return;
+        }
+        currVar = currVar->next;
+    }
+
+    printf("calloc\n");
+
     struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
     if(node == NULL) {
         fprintf(stderr, "Error : allocation\n");
@@ -821,7 +832,7 @@ void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
         if (strcmp(currProc->name, self->u.name) == 0) {
             fprintf(stderr, "Error : procedure %s is already created\n", self->u.name);
             ctx->stopProgram = true;
-            return;
+            break;
         }
         currProc = currProc->next;
     }
