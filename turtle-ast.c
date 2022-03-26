@@ -948,6 +948,7 @@ double eval_unary_operand(const struct ast_node *self, struct context *ctx) {
             value = ast_node_eval(self->children[0],ctx);
             break;
     }
+
     return value;
 }
 double eval_set_value(const struct ast_node *self, struct context *ctx) {
