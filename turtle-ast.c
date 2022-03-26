@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <float.h>
 
 #define PI 3.141592653589793
 #define SQRT2 1.41421356237309504880
@@ -885,6 +886,7 @@ double eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
 }
 double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
     double value = 0.0;
+    double max = DBL_MAX;
     switch (self->u.op) {
         case '+':
             value = ast_node_eval(self->children[0],ctx) + ast_node_eval(self->children[1],ctx);
@@ -902,6 +904,13 @@ double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
             value = pow(ast_node_eval(self->children[0],ctx), ast_node_eval(self->children[1],ctx));
             break;
     }
+
+    if(self->u.op == '^' && value > max) {
+        // power of the current value is out of the intervals
+        fprintf(stderr, "Error : the value is out of the intervals\n");
+        ctx->stopProgram = true;
+    }
+
     return value;
 }
 double eval_unary_operand(const struct ast_node *self, struct context *ctx) {
