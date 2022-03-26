@@ -910,7 +910,7 @@ double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
             break;
     }
 
-    if(self->u.op == '^' && value > max) {
+    if(self->u.op == '^' && value >= max) {
         // power of the current value is out of the intervals
         fprintf(stderr, "Error : the value is out of the intervals\n");
         ctx->stopProgram = true;
