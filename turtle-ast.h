@@ -134,6 +134,8 @@ struct var_handling {
 
 // the execution context
 struct context {
+    bool stopProgram; // when non-compliance with preconditions
+
     double x;
     double y;
     double angle;

@@ -458,6 +458,8 @@ void ast_node_destroy(struct ast_node *self) {
  * @param self the context of the execution
  */
 void context_create(struct context *self) {
+    self->stopProgram = false;
+
     self->x = 0.0;
     self->y = 0.0;
     self->angle = 0.0;
@@ -633,6 +635,9 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
     if (!self) {
         return -1;
     }
+    if(ctx->stopProgram){
+        return -1;
+    }
 
     switch (self->kind) {
         case KIND_CMD_SIMPLE:
@@ -792,7 +797,11 @@ void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
     ctx->color.g = ast_node_eval(self->children[1], ctx);
     ctx->color.b = ast_node_eval(self->children[2], ctx);
 
-    fprintf(stdout, "Color %f %f %f\n", ctx->color.r, ctx->color.g, ctx->color.b);
+    if(ctx->color.r < 0 || ctx->color.r > 1 || ctx->color.g < 0 || ctx->color.g > 1 || ctx->color.b < 0 || ctx->color.b > 1){
+        //not in interval [0 - 1]
+        fprintf(stderr, "Error : color values must be in [0 - 1] interval\n");
+        ctx->stopProgram = true;
+    }
 }
 void eval_cmd_home(const struct ast_node *self, struct context *ctx) {
     ctx->x = 0.0;
