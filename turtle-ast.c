@@ -518,19 +518,6 @@ void handler_proc_push(struct context *ctx, const struct ast_node *self, struct 
     assert(astNode);
     assert(ctx->handlerForProc);
 
-    //handle the situation where the procedure name is already used
-    struct proc_handling_node *currProc = ctx->handlerForProc->first;
-    while(currProc) {
-        if (strcmp(currProc->name, self->u.name) == 0) {
-            fprintf(stderr, "Error : procedure %s is already created\n", self->u.name);
-            ctx->stopProgram = true;
-            return;
-        }
-        currProc = currProc->next;
-    }
-
-    printf("here with %s\n", self->u.name);
-
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
     if(node == NULL) {
         fprintf(stderr, "Error : allocation\n");
@@ -828,8 +815,20 @@ void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
     handler_var_push(ctx, self, value);
 }
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
-    handler_proc_push(ctx, self, self->children[0]);
-    printf("stopProgramm=%i\n", ctx->stopProgram);
+    //handle the situation where the procedure name is already used
+    struct proc_handling_node *currProc = ctx->handlerForProc->first;
+    while(currProc) {
+        if (strcmp(currProc->name, self->u.name) == 0) {
+            fprintf(stderr, "Error : procedure %s is already created\n", self->u.name);
+            ctx->stopProgram = true;
+            return;
+        }
+        currProc = currProc->next;
+    }
+
+    if (!ctx->stopProgram) {
+        handler_proc_push(ctx, self, self->children[0]);
+    }
 }
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
     char* name = self->children[0]->u.name;
@@ -882,7 +881,7 @@ double eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
 
     if(value < 0) {
         // sqrt of a negative number
-        fprintf(stderr, "Error : the value to put in the square root in negative\n");
+        fprintf(stderr, "Error : the value to put in the square root is negative\n");
         ctx->stopProgram = true;
     }
 
