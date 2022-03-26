@@ -521,17 +521,20 @@ void handler_proc_push(struct context *ctx, const struct ast_node *self, struct 
     //handle the situation where the procedure name is already used
     struct proc_handling_node *currProc = ctx->handlerForProc->first;
     while(currProc) {
-        struct proc_handling_node *tmp = currProc;
-        currProc = currProc->next;
-        if (strcmp(tmp->name, self->u.name) == 0) {
+        if (strcmp(currProc->name, self->u.name) == 0) {
             fprintf(stderr, "Error : procedure %s is already created\n", self->u.name);
+            ctx->stopProgram = true;
             return;
         }
+        currProc = currProc->next;
     }
+
+    printf("here with %s\n", self->u.name);
 
     struct proc_handling_node *node = calloc(1, sizeof(struct proc_handling_node));
     if(node == NULL) {
         fprintf(stderr, "Error : allocation\n");
+        ctx->stopProgram = true;
         return;
     }
     node->name = self->u.name;
@@ -637,6 +640,7 @@ double ast_node_eval(const struct ast_node *self, struct context *ctx) {
         return -1;
     }
     if(ctx->stopProgram){
+        printf("stop!\n");
         return -1;
     }
 
@@ -825,6 +829,7 @@ void eval_cmd_set(const struct ast_node *self, struct context *ctx) {
 }
 void eval_cmd_proc(const struct ast_node *self, struct context *ctx) {
     handler_proc_push(ctx, self, self->children[0]);
+    printf("stopProgramm=%i\n", ctx->stopProgram);
 }
 void eval_cmd_call(const struct ast_node *self, struct context *ctx) {
     char* name = self->children[0]->u.name;
