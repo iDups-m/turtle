@@ -443,6 +443,12 @@ void ast_node_destroy(struct ast_node *self) {
     if(self->kind == KIND_EXPR_NAME) {
         free(self->u.name);
     }
+    if(self->kind == KIND_CMD_PROC) {
+        free(self->u.name);
+    }
+    if(self->kind == KIND_CMD_SET) {
+        free(self->u.name);
+    }
 
     if(self->next) {
         ast_node_destroy(self->next);
@@ -560,6 +566,7 @@ void handler_var_push(struct context *ctx, const struct ast_node *self, double v
     struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
     if(node == NULL) {
         fprintf(stderr, "Error : allocation\n");
+        ctx->stopProgram = true;
         return;
     }
     node->name = self->u.name;
