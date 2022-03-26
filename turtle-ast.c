@@ -774,7 +774,7 @@ void eval_cmd_position(const struct ast_node *self, struct context *ctx) {
     ctx->x = ast_node_eval(self->children[0], ctx);
     ctx->y = ast_node_eval(self->children[1], ctx);
 
-    fprintf(stdout, "MoveTo %f %1.f\n", ctx->x, ctx->y);
+    fprintf(stdout, "MoveTo %f %f\n", ctx->x, ctx->y);
 }
 void eval_cmd_right(const struct ast_node *self, struct context *ctx) {
     ctx->angle -= ast_node_eval(self->children[0], ctx);
@@ -812,6 +812,8 @@ void eval_cmd_color(const struct ast_node *self, struct context *ctx) {
         fprintf(stderr, "Error : color values must be in [0 - 1] interval\n");
         ctx->stopProgram = true;
     }
+
+    fprintf(stdout, "Color %f %f %f\n", ctx->color.r, ctx->color.g, ctx->color.b);
 }
 void eval_cmd_home(const struct ast_node *self, struct context *ctx) {
     ctx->x = 0.0;
