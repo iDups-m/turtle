@@ -517,7 +517,7 @@ void handler_proc_push(struct context *ctx, const struct ast_node *self, struct 
     assert(astNode);
     assert(ctx->handlerForProc);
 
-    //handle the situation where the variable name is already used
+    //handle the situation where the procedure name is already used
     struct proc_handling_node *currProc = ctx->handlerForProc->first;
     while(currProc) {
         struct proc_handling_node *tmp = currProc;
@@ -861,11 +861,25 @@ double eval_func_tan(const struct ast_node *self, struct context *ctx) {
 double eval_func_random(const struct ast_node *self, struct context *ctx) {
     double upper = ast_node_eval(self->children[0], ctx);
     double lower = ast_node_eval(self->children[1], ctx);
+
+    if(upper < lower) {
+        // invalid intervals
+        fprintf(stderr, "Error : the lower limit must be lesser than the upper limit\n");
+        ctx->stopProgram = true;
+    }
+
     double f = (double) rand() / RAND_MAX;
     return lower + f * (upper - lower);
 }
 double eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
     double value = ast_node_eval(self->children[0], ctx);
+
+    if(value < 0) {
+        // sqrt of a negative number
+        fprintf(stderr, "Error : the value to put in the square root in negative\n");
+        ctx->stopProgram = true;
+    }
+
     double res = sqrt(value);
     return res;
 }

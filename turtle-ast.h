@@ -64,9 +64,17 @@ struct ast_node {
   struct ast_node *next;  // the next node in the sequence
 };
 
+/*
+ * useful function
+ */
 char *str_dup(char *src);
+double degree_to_radian(double angle);
 
-//constructors
+
+/*
+ * constructors of the different commands for the turtle program
+ */
+
 
 /*
  * expression and operand
@@ -122,6 +130,7 @@ struct proc_handling_node {
 struct proc_handling {
     struct proc_handling_node* first;
 };
+
 // handling of variable for the context
 struct var_handling_node {
     char* name;
@@ -132,7 +141,9 @@ struct var_handling {
     struct var_handling_node* first;
 };
 
-// the execution context
+/*
+ * the execution context
+ */
 struct context {
     bool stopProgram; // when non-compliance with preconditions
 
@@ -161,13 +172,14 @@ void handler_proc_push(struct context *ctx, const struct ast_node *self, struct 
 void handler_var_push(struct context *ctx, const struct ast_node *self, double value);
 void ctx_handler_destroy(struct context *ctx);
 
+// create the default variable such as PI, SQRT2 and SQRT3
 void add_default_var(char* name, double value, struct context *ctx);
 
 // print the tree as if it was a Turtle program
 void ast_print(const struct ast *self);
 void ast_node_print(const struct ast_node *node);
 
-// print elements
+// print elements - commands, functions and operands
 void print_cmd_forward(const struct ast_node *self);
 void print_cmd_backward(const struct ast_node *self);
 void print_cmd_position(const struct ast_node *self);
@@ -197,7 +209,7 @@ void print_expr_block(const struct ast_node *self);
 void ast_eval(const struct ast *self, struct context *ctx);
 double ast_node_eval(const struct ast_node *self, struct context *ctx);
 
-//eval elements
+// eval elements - commands, functions and operands
 void eval_cmd_forward(const struct ast_node *self, struct context *ctx);
 void eval_cmd_backward(const struct ast_node *self, struct context *ctx);
 void eval_cmd_position(const struct ast_node *self, struct context *ctx);
@@ -221,8 +233,5 @@ double eval_binary_operand(const struct ast_node *self, struct context *ctx);
 double eval_unary_operand(const struct ast_node *self, struct context *ctx);
 double eval_set_value(const struct ast_node *self, struct context *ctx);
 double eval_expr_block(const struct ast_node *self, struct context *ctx);
-
-//useful function
-double degree_to_radian(double angle);
 
 #endif /* TURTLE_AST_H */
