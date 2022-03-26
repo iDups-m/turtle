@@ -865,13 +865,14 @@ double eval_func_tan(const struct ast_node *self, struct context *ctx) {
     return res;
 }
 double eval_func_random(const struct ast_node *self, struct context *ctx) {
-    double upper = ast_node_eval(self->children[0], ctx);
-    double lower = ast_node_eval(self->children[1], ctx);
+    double lower = ast_node_eval(self->children[0], ctx);
+    double upper = ast_node_eval(self->children[1], ctx);
 
     if(upper < lower) {
         // invalid intervals
         fprintf(stderr, "Error : the lower limit must be lesser than the upper limit\n");
         ctx->stopProgram = true;
+        return -1;
     }
 
     double f = (double) rand() / RAND_MAX;
@@ -884,6 +885,7 @@ double eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
         // sqrt of a negative number
         fprintf(stderr, "Error : the value to put in the square root in negative\n");
         ctx->stopProgram = true;
+        return -1;
     }
 
     double res = sqrt(value);
@@ -891,7 +893,6 @@ double eval_func_sqrt(const struct ast_node *self, struct context *ctx) {
 }
 double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
     double value = 0.0;
-    double max = DBL_MAX;
     switch (self->u.op) {
         case '+':
             value = ast_node_eval(self->children[0],ctx) + ast_node_eval(self->children[1],ctx);
@@ -906,14 +907,14 @@ double eval_binary_operand(const struct ast_node *self, struct context *ctx) {
             value = ast_node_eval(self->children[0],ctx) / ast_node_eval(self->children[1],ctx);
             break;
         case '^':
+            if(ast_node_eval(self->children[1],ctx) >= 32) {
+                // power of the current value is out of bounds
+                fprintf(stderr, "Error : pow arguments too big\n");
+                ctx->stopProgram = true;
+                return -1;
+            }
             value = pow(ast_node_eval(self->children[0],ctx), ast_node_eval(self->children[1],ctx));
             break;
-    }
-
-    if(self->u.op == '^' && value >= max) {
-        // power of the current value is out of the intervals
-        fprintf(stderr, "Error : the value is out of the intervals\n");
-        ctx->stopProgram = true;
     }
 
     return value;
