@@ -1,0 +1,37 @@
+# non respect of preconditions -> just comment or take off comment to see check error
+
+# just to alloc something in order to check the free :
+color red
+left 120
+fw 50
+proc TOTO {
+    home
+}
+
+
+proc NOTVALIDCOLOR {
+    color 1, 0, 1.5
+}
+
+# Error 1 : color not in interval [0 - 1]
+#call NOTVALIDCOLOR
+
+
+# Error 2 : redefinition of proc
+proc TOTO2 {
+    down
+}
+
+# Error 3 : square root of negative number
+#forward sqrt(-1)
+
+
+# Error 4 : not valid domain
+#forward random(100, 50)
+
+
+# Error 5 : out of bounds for pow
+#forward 2^99
+
+# Error 6 : redefinition of variable
+#set PI 3.15

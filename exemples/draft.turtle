@@ -1,0 +1,27 @@
+# Special cases
+
+color 1, 0, 0.5
+
+set VAR1 ((5 + 2) * 10 ) / 5
+fw VAR1
+repeat 2 repeat 2 repeat 2 bw VAR1
+
+bw 1e2
+bw 1e-2
+
+lt PI * 2
+set TEST (SQRT2 + SQRT3)
+fw TEST
+bw SQRT2
+
+
+home
+color cyan
+fw -3^2
+fw 2^8
+
+home
+color green
+fw SQRT3
+set SQRT3 100
+fw SQRT3

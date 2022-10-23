@@ -1,0 +1,44 @@
+set NITERATIONS 2027
+
+set BIGVAL 2 ^ 53
+set STEP 960
+set XA -STEP / 2
+set YA 360
+set XB -XA
+set YB YA
+set XC 0
+set YC YA - STEP * sin(60)
+color yellow
+up
+position XA, YA
+down
+position XB, YB
+position XC, YC
+position XA, YA
+proc RANDCORNER {
+	set TMP BIGVAL - random(0, 2) - BIGVAL + 1
+	set RANDCORNERX XB * TMP
+	set RANDCORNERY TMP * TMP * XB * SQRT3 + YC
+}
+set X1 random(XA, 0)
+set Y1 random(YA - (X1 - XA) * SQRT3, YA)
+set X2 random(0, XB)
+set Y2 random(YB - (XB - X2) * SQRT3, YB)
+repeat NITERATIONS {
+	call RANDCORNER
+	set X1 (X1 + RANDCORNERX) / 2
+	set Y1 (Y1 + RANDCORNERY) / 2
+	color blue
+	up
+	position X1, Y1
+	down
+	position 1 + X1, 1 + Y1
+	call RANDCORNER
+	set X2 (X2 + RANDCORNERX) / 2
+	set Y2 (Y2 + RANDCORNERY) / 2
+	color red
+	up
+	position X2, Y2
+	down
+	position 1 + X2, 1 + Y2
+}
