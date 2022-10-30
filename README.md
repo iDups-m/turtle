@@ -27,7 +27,18 @@ Compilation
 ```
 make
 ```
-Execution
+## Utilisation
+Pour une utilisation plus poussée du projet, des fichiers d'exemple se trouvent dans le dossier ``exemples``. Un viewer est également à disposition. Il est nécessaire d'avoir la librairie libsndio7.0 pour le lancer, récupérable avec la commande ``sudo apt install libsndio7.0``.
+
+Exécution simple
 ```
 ./turtle
+```
+Exécution d'un fichier d'exemple
+```
+build/turtle < exemples/hello.turtle
+```
+Exécution d'un fichier d'exemple et visualisation dans le viewer
+```
+build/turtle < exemples/hello.turtle | ./turtle-viewer 
 ```
