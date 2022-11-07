@@ -20,23 +20,10 @@
  * @return the copy of the string
  */
 char *str_dup(char *src) {
-    char *str;
-    char *p;
-    int len = 0;
-
-    while (src[len]) {
-        len++;
-    }
-
-    str = malloc(len + 1);
-    p = str;
-
-    while (*src) {
-        *p++ = *src++;
-    }
-
-    *p = '\0';
-    return str;
+    const size_t bytes = 1 + strlen(src);
+    char * res = malloc(bytes);
+    assert(res);
+    return memcpy(res, src, bytes);
 }
 
 /**
@@ -465,8 +452,8 @@ void ast_node_destroy(struct ast_node *self) {
  * @param self the context of the execution
  */
 void context_create(struct context *self) {
+    /*
     self->stopProgram = false;
-
     self->x = 0.0;
     self->y = 0.0;
     self->angle = 0.0;
@@ -474,6 +461,9 @@ void context_create(struct context *self) {
     self->color.r = 0.0;
     self->color.g = 0.0;
     self->color.b = 0.0;
+     */
+
+    memset(self, 0, sizeof(struct context));
 
     self->handlerForProc = calloc(1, sizeof(struct proc_handling));
     self->handlerForProc->first = NULL;
@@ -500,7 +490,7 @@ void add_default_var(char *name, double value, struct context *ctx) {
         fprintf(stderr, "Error : allocation\n");
         return;
     }
-    node->name = str_dup(name);
+    node->name = name;
     node->value = value;
 
     if(ctx->handlerForVar->first == NULL) {
@@ -561,8 +551,6 @@ void handler_var_push(struct context *ctx, const struct ast_node *self, double v
         currVar = currVar->next;
     }
 
-    printf("calloc\n");
-
     struct var_handling_node *node = calloc(1, sizeof(struct var_handling_node));
     if(node == NULL) {
         fprintf(stderr, "Error : allocation\n");
@@ -587,27 +575,25 @@ void handler_var_push(struct context *ctx, const struct ast_node *self, double v
  */
 void ctx_handler_destroy(struct context *ctx) {
     assert(ctx->handlerForProc);
+    assert(ctx->handlerForVar);
+
     struct proc_handling_node *currProc = ctx->handlerForProc->first;
     struct var_handling_node *currVar = ctx->handlerForVar->first;
 
     while(currProc) {
         struct proc_handling_node *tmp = currProc;
         currProc = currProc->next;
-        free(tmp->name);
         free(tmp);
-        tmp = NULL;
     }
-    ctx->handlerForProc->first = NULL;
+    free(currProc);
     free(ctx->handlerForProc);
 
     while(currVar) {
         struct var_handling_node *tmp = currVar;
         currVar = currVar->next;
-        free(tmp->name);
         free(tmp);
-        tmp = NULL;
     }
-    ctx->handlerForVar->first = NULL;
+    free(currVar);
     free(ctx->handlerForVar);
 }
 
