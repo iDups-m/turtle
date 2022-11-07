@@ -23,6 +23,7 @@ char *str_dup(char *src) {
     const size_t bytes = 1 + strlen(src);
     char * res = malloc(bytes);
     assert(res);
+
     return memcpy(res, src, bytes);
 }
 
